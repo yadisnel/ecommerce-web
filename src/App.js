@@ -1,19 +1,45 @@
-import React from 'react';
-import { ThemeProvider } from '@material-ui/core/styles';
-import { BrowserRouter} from "react-router-dom";
+import { useDispatch } from "react-redux";
 
-//Local
+import logo from './logo.svg';
 import './App.css';
-import Main from './containers/Main'
-import Theme from './theme/Theme'
+import Buy from "./modules/Buy/Buy";
+import { translations } from "./modules/Translation/translations";
+import {changeLanguage, changeLanguageENAsync} from "./modules/Translation/redux/translationActions";
 
 function App() {
+  const dispatch = useDispatch()
+
+  const changeLanguagePressHandler = (lang) => {
+    if(lang === 'es'){
+      dispatch(changeLanguage(translations.es))
+      return;
+    }
+    if(lang === 'en'){
+      dispatch(changeLanguage(translations.en))
+      return;
+    }
+    if(lang === 'sr'){
+      dispatch(changeLanguage(translations.sr))
+      return;
+    }
+    if(lang === 'en async'){
+      dispatch(changeLanguageENAsync())
+      return;
+    }
+  }
+
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={Theme}>
-        <Main/>
-      </ThemeProvider>
-    </BrowserRouter>
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <Buy/>
+        <br/><br/>
+        <button onClick={() => changeLanguagePressHandler('es')}> ES </button><br/>
+        <button onClick={() => changeLanguagePressHandler('en')}> EN </button><br/>
+        <button onClick={() => changeLanguagePressHandler('sr')}> SR </button><br/>
+        <button onClick={() => changeLanguagePressHandler('en async')}> EN ASYNC </button><br/>
+      </header>
+    </div>
   );
 }
 
