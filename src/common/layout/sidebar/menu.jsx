@@ -1,40 +1,16 @@
 import {Home,Anchor,Headphones} from 'react-feather/dist/index'
 export const MENUITEMS = [
   {
-    menutitle:"General",
-    menucontent:"Dashboards,Widgets",
+    menutitle:"Ventas Online, Serbia.",
+    menucontent:"Comercio Electronico.",
     Items:[
       {
-        title: 'Dashboard', icon: Home, type: 'sub', active: false, children: [
-          { path: `${process.env.PUBLIC_URL}/dashboard/default`, title: 'Default', type: 'link' },
-          { path: `${process.env.PUBLIC_URL}/dashboard/ecommerce`, title: 'Ecommerce', type: 'link' },
-        ]
+        title: 'Compra', icon: Home,  active: false, path: `${process.env.PUBLIC_URL}/dashboard/productos`, type: 'link' 
+           
+          //{ path: `${process.env.PUBLIC_URL}/dashboard/ecommerce`, title: '', type: 'link' },
+        
       }
     ]
 
-  },
-  {
-    menutitle:"Starter",
-    menucontent:"Ready to use Apps",
-    Items:[
-      {
-        title: 'Starter kit', icon: Anchor , type: 'sub', active: false, children: [
-          { path: `${process.env.PUBLIC_URL}/starter-kits/sample-page`, title: 'Sample Page', type: 'link' },
-        ]
-      }
-    ]
-  },
-  {
-    menutitle:"Support",
-    menucontent:"",
-    Items:[
-      {
-        title: 'Raise Support', icon: Headphones, type: 'sub',active: false, children: [
-          { title: 'Raise Ticket', type: 'exteral_link', path: 'http://support.pixelstrap.com/help-center' },
-        ]
-      }
-    ]
-  },
-
-
+  }
 ]
