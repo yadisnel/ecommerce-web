@@ -26,7 +26,7 @@
 @import "base/typography";
 
 
-//  *** modules ***
+//  *** components ***
 @import "components/according";
 @import "components/alert";
 @import "components/avatars";
@@ -42,11 +42,11 @@
 @import "components/datepicker";
 @import "components/dropdown";
 @import "components/datatable";
-// @import "modules/form-builder";
+// @import "components/form-builder";
 @import "components/form-input";
 @import "components/form-wizard";
 @import "components/forms";
-// @import "modules/form_builder-2";
+// @import "components/form_builder-2";
 @import "components/icons";
 @import "components/list";
 @import "components/loader";
@@ -67,7 +67,7 @@
 
 
 
-//	*** modules ***
+//	*** pages ***
 
 @import "pages/blog";
 @import "pages/bookmark-app";
@@ -106,7 +106,7 @@
 @import "pages/wishlist";
 
 
-// *** layout ***
+// *** layout *** 
 
 @import "layout/footer";
 @import "layout/grid";
