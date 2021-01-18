@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import man from '../assets/images/dashboard/profile.jpg';
-import {Container,Row,Col,Form,FormGroup,Input,Label,Button,NavItem, NavLink, Nav,TabContent,TabPane} from 'reactstrap'
+import {Container,Row,Col,Form,FormGroup,Input,Label,Button,NavItem, NavLink, Nav,TabContent,TabPane,Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 import {firebase_app,googleProvider,facebookProvider,twitterProvider,githubProvider, Jwt_token } from '../data/config'
 import { handleResponse } from '../services/fack.backend'
 import { useAuth0 } from '@auth0/auth0-react'
@@ -8,14 +8,16 @@ import { toast } from 'react-toastify';
 import {withRouter} from 'react-router-dom'
 import {Twitter,Facebook, GitHub} from 'react-feather'
 import {Password,SignIn, EmailAddress,RememberPassword,ForgotPassword ,CreateAccount,FIREBASE,AUTH0,JWT,LoginWithJWT } from '../constant';
+import { useHistory } from 'react-router-dom'
 
 const Logins = (props) => {
-  
+    
+    const history = useHistory();
     const {loginWithRedirect} = useAuth0()
     const [email, setEmail] = useState("test@gmail.com");
     const [password, setPassword] = useState("test123");
     const [loading,setLoading] = useState(false) 
-    const [selected, setSelected] = useState("firebase");
+    const [selected, setSelected] = useState("jwt");
     const [togglePassword,setTogglePassword] = useState(false)
 
     const [value, setValue] = useState(
@@ -137,50 +139,39 @@ const Logins = (props) => {
       .then(user => {
         // store user details and jwt token in local storage to keep user logged in between page refreshes
         setValue(man);
-        setName("Emay Walter");
+        setName("Osiel");
         localStorage.setItem('token', user);
         window.location.href = `${process.env.PUBLIC_URL}/dashboard/default`
         return user;
       });
     }
 
+    const {
+      buttonLabel,
+      className
+    } = props;
+  
+    const [modal, setModal] = useState(true);
+  
+    const toggle = () => setModal(!modal);
+
+    const UserMenuRedirect = (redirect) => {
+      history.push(redirect)
+    }
+
     return (
-        <Container fluid={true} className="p-0">
-        <Row>
-        <Col xs="12">     
-          <div className="login-card">
+      <div>
+       <Modal isOpen={modal}  className={className} >
+       <ModalHeader toggle={toggle} onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/dashboard/default`)}>
+        <img className="img-fluid for-light" src={require("../assets/images/logo/login.png")} alt=""/>
+       </ModalHeader>
+       <div className="login-card">
             <div>
-              <div>
-                <a className="logo" href="index.html">
-                  <img className="img-fluid for-light" src={require("../assets/images/logo/login.png")} alt=""/>
-                  <img className="img-fluid for-dark" src={require("../assets/images/logo/logo_dark.png")} alt=""/>
-                </a>
-              </div>
-              <div className="login-main login-tab"> 
-                <Nav className="border-tab flex-column" tabs>
-                  <NavItem>
-                    <NavLink className={selected === 'firebase' ? 'active' : ''} onClick={() => setSelected('firebase')}>
-                      <img src={require("../assets/images/firebase.svg")} alt="" />
-                      <span>{FIREBASE}</span>
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink className={selected === 'jwt' ? 'active' : ''} onClick={() => setSelected('jwt')}>
-                    <img src={require("../assets/images/jwt.svg")} alt="" />
-                    <span>{JWT}</span>
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink className={selected === 'auth0' ? 'active' : ''} onClick={() => setSelected('auth0')}>
-                    <img src={require("../assets/images/auth0.svg")} alt="" />
-                    <span>{AUTH0}</span>
-                    </NavLink>
-                  </NavItem>
-                </Nav>
-                <TabContent activeTab={selected} className="content-login">
+            <div className="login-main login-tab"> 
+       <TabContent activeTab={selected} className="content-login">
                   <TabPane  className="fade show" tabId={selected === "firebase" ? "firebase" : "jwt"}>
                     <Form className="theme-form">
-                      <h4>{selected === "firebase" ? "Sign In With Firebase" : "Sign In With Jwt"}</h4>
+                      <h4>{selected === "firebase" ? "Sign In With Firebase" : "Login"}</h4>
                       <p>{"Enter your email & password to login"}</p>
                       <FormGroup>
                         <Label className="col-form-label">{EmailAddress}</Label>
@@ -211,12 +202,7 @@ const Logins = (props) => {
                           <Button color="light" onClick={googleAuth} >
                             <i className="icon-social-google txt-googleplus"></i>
                           </Button>
-                          <Button color="light" onClick={twitterAuth} >
-                            <Twitter className="txt-twitter" />
-                          </Button>
-                          <Button color="light" onClick={githubAuth} >
-                            <GitHub />
-                          </Button>
+                          
                         </div>
                       </div>
                       <p className="mt-4 mb-0">{"Don't have account?"}<a className="ml-2" href="#javascript">{CreateAccount}</a></p>
@@ -231,12 +217,11 @@ const Logins = (props) => {
                     </div>
                   </TabPane>
                 </TabContent>
-              </div>
+                </div>
             </div>
           </div>
-        </Col>
-        </Row>
-        </Container>
+      </Modal>
+      </div> 
     );
 }
 
