@@ -34,6 +34,7 @@ const Rightbar = (props) => {
   
   const history = useHistory();
   const [profile, setProfile] = useState('');
+  const [logueado, setLogueado] = useState(true);
   const [name, setName] = useState('')
   const [searchresponsive, setSearchresponsive] = useState(false)
   const [langdropdown, setLangdropdown] = useState(false)
@@ -65,13 +66,15 @@ const Rightbar = (props) => {
     localStorage.removeItem('profileURL')
     localStorage.removeItem('token');
     firebase_app.auth().signOut()
-    history.push(`${process.env.PUBLIC_URL}/login`)
+    history.push(`${process.env.PUBLIC_URL}/dasboard/default`)
   }
 
   const  Logout_From_Auth0 = () =>  {
     localStorage.removeItem("auth0_profile")
     localStorage.setItem("authenticated",false)
-    history.push(`${process.env.PUBLIC_URL}/login`)
+    setLogueado(false)
+    setName('Entrar')
+    history.push(`${process.env.PUBLIC_URL}/dasboard/default`)
     logout()
   }
 
@@ -287,17 +290,25 @@ const Rightbar = (props) => {
           <li className="maximize"><a className="text-dark" href="#javascript" onClick={goFull}><Minimize /></a></li>
           <li className="profile-nav onhover-dropdown p-0">
             <div className="media profile-media">
-              <img className="b-r-10" src={authenticated ? auth0_profile.picture : profile} alt="" />
-              <div className="media-body"><span>{authenticated ? auth0_profile.name :  name}</span>
-                <p className="mb-0 font-roboto">{Admin} <i className="middle fa fa-angle-down"></i></p>
+              <img className="b-r-10" src={ logueado ?  profile : 'lgo' } alt="" />
+              <div className="media-body"><span>{ logueado ? 'Registrado' : 'Registrese' }</span>
+                <p className="mb-0 font-roboto">{ logueado ? 'Administrador' : 'Invitado' } <i className="middle fa fa-angle-down"></i></p>
               </div>
             </div>
+            { logueado ? 
             <ul className="profile-dropdown onhover-show-div">
+             
               <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/users/userProfile`)}><User /><span>{Account} </span></li>
               <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/email-app`)}><Mail /><span>{Inbox}</span></li>
               <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/todo-app/todo`)}><FileText /><span>{Taskboard}</span></li>
-              <li onClick={authenticated ? Logout_From_Auth0 : Logout_From_Firebase}><LogIn /><span>{LogOut}</span></li>
-            </ul>
+              <li onClick={authenticated ? Logout_From_Auth0 : Logout_From_Auth0 }><LogIn /><span>{LogOut}</span></li> :
+            
+            </ul> 
+             : 
+             <ul className="profile-dropdown onhover-show-div">
+                <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/login`)}><User /><span>Login </span></li>
+             </ul> 
+            }
           </li>
         </ul>
       </div>
