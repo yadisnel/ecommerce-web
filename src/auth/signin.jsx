@@ -167,8 +167,8 @@ const Logins = (props) => {
        </ModalHeader>
        <div className="login-card">
             <div>
-            <div className="login-main login-tab"> 
-       <TabContent activeTab={selected} className="content-login">
+              <div className="login-main login-tab"> 
+                <TabContent activeTab={selected} className="content-login">
                   <TabPane  className="fade show" tabId={selected === "firebase" ? "firebase" : "jwt"}>
                     <Form className="theme-form">
                       <h4>{selected === "firebase" ? "Sign In With Firebase" : "Login"}</h4>
@@ -218,7 +218,7 @@ const Logins = (props) => {
                   </TabPane>
                 </TabContent>
                 </div>
-            </div>
+              </div>
           </div>
       </Modal>
       </div> 

@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import man from '../../assets/images/dashboard/profile.jpg'
-import { FileText, LogIn, Mail, User, MessageSquare, Bell, Minimize, Search, ShoppingCart, Minus, Plus, X } from 'react-feather';
+import { FileText, LogIn, Mail, User, MessageSquare, Bell, Minimize, Search, ShoppingCart, Minus, Plus, X ,Twitter,Facebook, GitHub} from 'react-feather';
 import { useHistory } from 'react-router-dom'
 import { firebase_app } from '../../data/config'
 import {useAuth0} from '@auth0/auth0-react'
@@ -13,7 +13,8 @@ import {
   setLanguage,
   translate,
 } from 'react-switch-lang';
-
+import {  Modal, ModalHeader, ModalBody,Form,FormGroup,Input,Label,Button,TabContent,TabPane,InputGroup, InputGroupAddon} from 'reactstrap'
+import {Password,SignIn, EmailAddress,RememberPassword,ForgotPassword ,CreateAccount,FIREBASE,AUTH0,JWT,LoginWithJWT } from '../../constant';
 import {English,Deutsch,Español,Français,Português,简体中文,Notification,DeliveryProcessing,OrderComplete,TicketsGenerated,DeliveryComplete,CheckAllNotification,ViewAll,MessageBox,EricaHughes,KoriThomas,Admin,Account,Inbox,Taskboard,LogOut,AinChavez,CheckOut,ShopingBag,OrderTotal,GoToShopingBag} from '../../constant'
 
 import en from '../../assets/i18n/en.json';
@@ -23,18 +24,16 @@ import fr from '../../assets/i18n/fr.json';
 import du from '../../assets/i18n/du.json';
 import cn from '../../assets/i18n/cn.json';
 import ae from '../../assets/i18n/ae.json';
-import { InputGroup, InputGroupAddon, Button } from 'reactstrap';
 
 setTranslations({ en, es, pt, fr, du, cn, ae });
 setDefaultLanguage('en');
 setLanguageCookie();
 
 const Rightbar = (props) => {    
-
-  
+ 
   const history = useHistory();
   const [profile, setProfile] = useState('');
-  const [logueado, setLogueado] = useState(true);
+  const [logueado, setLogueado] = useState(false);
   const [name, setName] = useState('')
   const [searchresponsive, setSearchresponsive] = useState(false)
   const [langdropdown, setLangdropdown] = useState(false)
@@ -43,6 +42,11 @@ const Rightbar = (props) => {
   const [cartDropdown, setCartDropDown] = useState(false)
   const [notificationDropDown, setNotificationDropDown] = useState(false)
   const [chatDropDown, setChatDropDown] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading,setLoading] = useState(false) 
+  const [togglePassword,setTogglePassword] = useState(false)
   
   // auth0 profile
   const {logout} = useAuth0()
@@ -142,6 +146,14 @@ const Rightbar = (props) => {
       localStorage.setItem('layout_version', 'dark-only');
     }
   }
+  
+  const openModal = () => {
+    setOpen(true)
+  };
+
+  const onCloseModal = () => {
+    setOpen(false)
+  };
 
   return (
     <Fragment>
@@ -167,8 +179,9 @@ const Rightbar = (props) => {
             </div>
           </li>
           <li><span className="header-search"><Search onClick={() => SeacrhResposive(searchresponsive)} /></span></li>
-          <li className="onhover-dropdown">
-            <div className="notification-box" onClick={() => setNotificationDropDown(!notificationDropDown)}><Bell /><span className="badge badge-pill badge-secondary">2</span></div>
+          <li className="onhover-dropdown" onClick={() => setNotificationDropDown(!notificationDropDown)}>
+            <div className="notification-box" onClick={() => openModal()}><Bell /><span className="badge badge-pill badge-secondary">2</span></div>
+            { logueado ? 
             <ul className={`notification-dropdown onhover-show-div ${notificationDropDown ? "active" : ""}`}>
               <li>
                 <Bell />
@@ -188,14 +201,16 @@ const Rightbar = (props) => {
               </li>
               <li><button className="btn btn-primary" >{CheckAllNotification}</button>
               </li>
-            </ul>
+            </ul>:''}
           </li>
-          <Bookmark/>
+          {/*<Bookmark/>*/}
           <li>
             <div className="mode" onClick={() => MoonlightToggle(moonlight)}><i className={`fa ${moonlight ? 'fa-lightbulb-o' : 'fa-moon-o'}`}></i></div>
           </li>
-          <li className="cart-nav onhover-dropdown">
+          <li className="cart-nav onhover-dropdown" onClick={() => openModal()}>
+          
             <div className="cart-box" onClick={() => setCartDropDown(!cartDropdown)}><ShoppingCart/><span className="badge badge-pill badge-primary">{"2"}</span></div>
+            { logueado ? 
             <ul className={`cart-dropdown onhover-show-div ${cartDropdown ? "active" : ""}`}>
               <li>
                 <h6 className="mb-0 f-20">{ShopingBag}</h6><ShoppingCart/>
@@ -249,9 +264,11 @@ const Rightbar = (props) => {
                 <Link to={`${process.env.PUBLIC_URL}/app/ecommerce/product`}><Button color="primary" className="btn btn-block view-cart">{GoToShopingBag}</Button></Link>
                 <Link to={`${process.env.PUBLIC_URL}/app/ecommerce/checkout`}><Button color="secondary" className="btn-block view-cart mt-2">{CheckOut}</Button></Link>
               </li>
-            </ul>
+            </ul>:''
+          }
           </li>
           <li className="onhover-dropdown" onClick={() => setChatDropDown(!chatDropDown)}><MessageSquare />
+          { logueado ? 
             <ul className={`chat-dropdown onhover-show-div ${chatDropDown ? "active" : ""}`}>
               <li>
                 <MessageSquare />
@@ -285,10 +302,11 @@ const Rightbar = (props) => {
                 </div>
               </li>
               <li className="text-center"> <button className="btn btn-primary">{ViewAll}     </button></li>
-            </ul>
+            </ul>:''
+           }
           </li>
           <li className="maximize"><a className="text-dark" href="#javascript" onClick={goFull}><Minimize /></a></li>
-          <li className="profile-nav onhover-dropdown p-0">
+          {/*<li className="profile-nav onhover-dropdown p-0">
             <div className="media profile-media">
               <img className="b-r-10" src={ logueado ?  profile : 'lgo' } alt="" />
               <div className="media-body"><span>{ logueado ?  "Hola," + " " + name : 'Registrese' }</span>
@@ -309,9 +327,58 @@ const Rightbar = (props) => {
                 <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/login`)}><User /><span>Login </span></li>
              </ul> 
             }
-          </li>
+          </li>*/}
         </ul>
       </div>
+      <Modal className="modal-lg modal-dialog-centered product-modal" isOpen={open}>
+        <ModalBody>
+          <ModalHeader toggle={onCloseModal}>
+                      
+          </ModalHeader>
+          <div className="login-card">
+           <div>
+            <div className="login-main login-tab"> 
+               <Form className="theme-form">
+                  <p>{"Enter your email & password to login"}</p>
+                      <FormGroup>
+                        <Label className="col-form-label">{EmailAddress}</Label>
+                        <Input className="form-control" type="email" required="" onChange={e => setEmail(e.target.value)} defaultValue={email} />
+                      </FormGroup>
+                      <FormGroup>
+                        <Label className="col-form-label">{Password}</Label>
+                        <Input className="form-control" type={togglePassword ?  "text" : "password"} onChange={e => setPassword(e.target.value)} defaultValue={password} required=""/>
+                        <div className="show-hide" onClick={() => setTogglePassword(!togglePassword)}><span className={togglePassword ? "" : "show"}></span></div>
+                      </FormGroup>
+                      <div className="form-group mb-0">
+                        <div className="checkbox ml-3">
+                          <Input id="checkbox1" type="checkbox"/>
+                          <Label className="text-muted" for="checkbox1">{RememberPassword}</Label>
+                        </div><a className="link" href="#javascript">{ForgotPassword}</a>
+                        {selected === "firebase" ?
+                        <Button color="primary" className="btn-block" disabled={loading ? loading : loading} >{loading ? "LOADING..." : SignIn }</Button>
+                        :
+                        <Button color="primary" className="btn-block" >{LoginWithJWT}</Button>
+                        }
+                      </div>
+                      <h6 className="text-muted mt-4 or">{"Or Sign in with"}</h6>
+                      <div className="social mt-4">
+                        <div className="btn-showcase">
+                          <Button color="light"  >
+                            <Facebook className="txt-fb" />
+                          </Button>
+                          <Button color="light"  >
+                            <i className="icon-social-google txt-googleplus"></i>
+                          </Button>
+                          
+                        </div>
+                      </div>
+                      <p className="mt-4 mb-0">{"Don't have account?"}<a className="ml-2" href="#javascript">{CreateAccount}</a></p>
+                    </Form>
+                    </div>
+                    </div>
+                    </div>
+        </ModalBody>
+      </Modal>
     </Fragment>
 
   );

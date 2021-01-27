@@ -116,7 +116,7 @@ const Root = (props) =>  {
 
           {/*Osiel, cambiando para poder acceder a la aplicacion sin login*/}
           {/*{currentUser !== null || authenticated || jwt_token  ?*/}
-          {!currentUser || authenticated || jwt_token  ?
+         
 
           <App>
 
@@ -140,9 +140,9 @@ const Root = (props) =>  {
           </TransitionGroup>
 
           </App>
-          :
-          <Redirect to={`${process.env.PUBLIC_URL}/login`} />
-          }
+         
+          
+          
         </Switch>
         </BrowserRouter>
         </Provider>
