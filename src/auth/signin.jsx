@@ -2,7 +2,6 @@ import React,{useState,useEffect} from 'react';
 import man from '../assets/images/dashboard/profile.jpg';
 import {Container,Row,Col,Form,FormGroup,Input,Label,Button,NavItem, NavLink, Nav,TabContent,TabPane,Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap'
 import {firebase_app,googleProvider,facebookProvider,twitterProvider,githubProvider, Jwt_token } from '../data/config'
-import { handleResponse } from '../services/fack.backend'
 import { useAuth0 } from '@auth0/auth0-react'
 import { toast } from 'react-toastify';
 import {withRouter} from 'react-router-dom'
@@ -11,12 +10,12 @@ import {Password,SignIn, EmailAddress,RememberPassword,ForgotPassword ,CreateAcc
 import { useHistory } from 'react-router-dom'
 
 const Logins = (props) => {
-    
+
     const history = useHistory();
     const {loginWithRedirect} = useAuth0()
     const [email, setEmail] = useState("test@gmail.com");
     const [password, setPassword] = useState("test123");
-    const [loading,setLoading] = useState(false) 
+    const [loading,setLoading] = useState(false)
     const [selected, setSelected] = useState("jwt");
     const [togglePassword,setTogglePassword] = useState(false)
 
@@ -28,7 +27,7 @@ const Logins = (props) => {
     );
 
     useEffect(() => {
-      
+
     localStorage.setItem('profileURL', value);
     localStorage.setItem('Name', name);
     }, [value,name]);
@@ -54,7 +53,7 @@ const Logins = (props) => {
     }
 
     const googleAuth = async () => {
-      
+
       try {
               firebase_app.auth().signInWithPopup(googleProvider).then(function (result) {
               setName(result.user.displayName);
@@ -63,7 +62,7 @@ const Logins = (props) => {
               setTimeout(() => {
                 props.history.push(`${process.env.PUBLIC_URL}/dashboard/default`);
               }, 200);
-            
+
           });
       } catch (error) {
           setTimeout(() => {
@@ -73,7 +72,7 @@ const Logins = (props) => {
     };
 
     const facebookAuth = async () => {
-      
+
       try {
               firebase_app.auth().signInWithPopup(facebookProvider).then(function (result) {
               setValue(result.user.photoURL);
@@ -90,69 +89,13 @@ const Logins = (props) => {
       }
     }
 
-    const twitterAuth = async () => {
-    
-      try {
-              firebase_app.auth().signInWithPopup(twitterProvider).then(function (result) {
-              setValue(result.user.photoURL);
-              setName(result.user.displayName)
-              localStorage.setItem('token', Jwt_token);
-              setTimeout(() => {
-                props.history.push(`${process.env.PUBLIC_URL}/dashboard/default`);
-              }, 200);
-          });
-      } catch (error) {
-          setTimeout(() => {
-              toast.error("Oppss.. The password is invalid or the user does not have a password.");
-          }, 200);
-      }
-    }
-
-    const githubAuth = async () => {
-      
-      try {
-              firebase_app.auth().signInWithPopup(githubProvider).then(function (result) {
-              setValue(result.user.photoURL);
-              setName("Hardik Parmar")
-              localStorage.setItem('token', Jwt_token);
-              setTimeout(() => {
-                props.history.push(`${process.env.PUBLIC_URL}/dashboard/default`);
-              }, 200);
-          });
-      } catch (error) {
-          setTimeout(() => {
-              toast.error("Oppss.. The password is invalid or the user does not have a password.");
-          }, 200);
-      }
-    }
-
-    const loginWithJwt = (email,password) => {
-
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: ({ email, password })
-      };
-      
-      return fetch('/users/authenticate', requestOptions)
-      .then(handleResponse)
-      .then(user => {
-        // store user details and jwt token in local storage to keep user logged in between page refreshes
-        setValue(man);
-        setName("Osiel");
-        localStorage.setItem('token', user);
-        window.location.href = `${process.env.PUBLIC_URL}/dashboard/default`
-        return user;
-      });
-    }
-
     const {
       buttonLabel,
       className
     } = props;
-  
+
     const [modal, setModal] = useState(true);
-  
+
     const toggle = () => setModal(!modal);
 
     const UserMenuRedirect = (redirect) => {
@@ -167,7 +110,7 @@ const Logins = (props) => {
        </ModalHeader>
        <div className="login-card">
             <div>
-              <div className="login-main login-tab"> 
+              <div className="login-main login-tab">
                 <TabContent activeTab={selected} className="content-login">
                   <TabPane  className="fade show" tabId={selected === "firebase" ? "firebase" : "jwt"}>
                     <Form className="theme-form">
@@ -190,7 +133,7 @@ const Logins = (props) => {
                         {selected === "firebase" ?
                         <Button color="primary" className="btn-block" disabled={loading ? loading : loading} onClick={(e) => loginAuth(e)}>{loading ? "LOADING..." : SignIn }</Button>
                         :
-                        <Button color="primary" className="btn-block" onClick={() => loginWithJwt(email,password)}>{LoginWithJWT}</Button>
+                        <Button color="primary" className="btn-block" onClick={() => {}}>{LoginWithJWT}</Button>
                         }
                       </div>
                       <h6 className="text-muted mt-4 or">{"Or Sign in with"}</h6>
@@ -202,7 +145,7 @@ const Logins = (props) => {
                           <Button color="light" onClick={googleAuth} >
                             <i className="icon-social-google txt-googleplus"></i>
                           </Button>
-                          
+
                         </div>
                       </div>
                       <p className="mt-4 mb-0">{"Don't have account?"}<a className="ml-2" href="#javascript">{CreateAccount}</a></p>
@@ -213,7 +156,7 @@ const Logins = (props) => {
                         <img src={require("../assets/images/auth-img.svg")} alt="" />
                         <h4>{"Welcome to login with Auth0"}</h4>
                         <p>{"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy"}</p>
-                        <Button color="info" onClick={loginWithRedirect}>{AUTH0}</Button> 
+                        <Button color="info" onClick={loginWithRedirect}>{AUTH0}</Button>
                     </div>
                   </TabPane>
                 </TabContent>
@@ -221,7 +164,7 @@ const Logins = (props) => {
               </div>
           </div>
       </Modal>
-      </div> 
+      </div>
     );
 }
 

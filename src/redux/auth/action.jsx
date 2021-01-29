@@ -1,16 +1,23 @@
-import {SIGNIN_REQUEST, SIGNUP_REQUEST, SIGNUP_SUCCESFULL} from '../actionTypes'
+import {SET_USER, SHOW_LOADING_LOGIN_MODAL, SHOW_LOGIN_MODAL, SIGN_IN_REQUEST} from "../actionTypes";
 
-export const signin = (user) => ({
-    type: SIGNIN_REQUEST,
+//Esta accion solo guarda el objeto user en el reducer
+export const setUser = (user) => ({
+    type: SET_USER,
     payload: user
 })
 
-export const signup = (user) => ({
-    type: SIGNUP_REQUEST,
-    payload: user
+//Esta accion dispara la saga SignIn porque hay un watcher escuchando SIGN_IN_REQUEST, el payload va a ser recibido por la saga
+export const login = (username, password) => ({
+    type: SIGN_IN_REQUEST,
+    payload: { username, password }
 })
 
-export const succesaut = () => ({
-    type:SIGNUP_SUCCESFULL
-    
+export const setShowLoginModal = (show) => ({
+    type: SHOW_LOGIN_MODAL,
+    payload: show
+})
+
+export const setShowLoadingLoginModal = (show) => ({
+    type: SHOW_LOADING_LOGIN_MODAL,
+    payload: show
 })

@@ -17,7 +17,7 @@ const  Productpage = (props)  => {
     const [rating,setRating] = useState(0)
     // eslint-disable-next-line
     const [quantity,Setquantity] = useState(1)
-    
+
     const slider1 = useRef();
     const slider2 = useRef();
     const dispatch = useDispatch()
@@ -37,21 +37,21 @@ const  Productpage = (props)  => {
         dispatch(addToCart(product, qty));
         history.push(`${process.env.PUBLIC_URL}/app/ecommerce/cart`)
     }
-    
+
     const buyProduct = (product, qty) => {
-        dispatch(addToCart(product, qty)); 
+        dispatch(addToCart(product, qty));
         history.push(`${process.env.PUBLIC_URL}/app/ecommerce/checkout`)
     }
 
     const addWishList = (product) => {
         dispatch({ type: ADD_TO_WISHLIST, payload: { product } });
-        history.push(`${process.env.PUBLIC_URL}/app/ecommerce/wishlist`);
+        history.push('/wishlist');
     }
 
     const changeRating = (newRating) => {
         setRating(newRating)
     }
-    
+
     return (
         <Fragment>
                 <Breadcrumb parent="Ecommerce" title="Product Page"/>
@@ -61,8 +61,8 @@ const  Productpage = (props)  => {
                        <Card>
                         <Row className="product-page-main">
                             <Col xl="4">
-                                <Slider  
-                                    asNavFor={nav2} 
+                                <Slider
+                                    asNavFor={nav2}
                                     arrows= {false}
                                         ref={slider => (slider1.current = slider)} className="product-slider">
                                     {singleItem.variants ? singleItem.variants.map((item, i) => {
@@ -73,7 +73,7 @@ const  Productpage = (props)  => {
                                         )
                                     }) :
                                         <Media src={singleItem.img} alt="" className="img-fluid" />
-                                    }   
+                                    }
                                     </Slider>
                                     <Slider asNavFor={nav1}
                                     ref={slider => (slider2.current= slider)}

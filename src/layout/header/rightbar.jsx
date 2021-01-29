@@ -1,21 +1,44 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import man from '../../assets/images/dashboard/profile.jpg'
-import { FileText, LogIn, Mail, User, MessageSquare, Bell, Minimize, Search, ShoppingCart, Minus, Plus, X ,Twitter,Facebook, GitHub} from 'react-feather';
-import { useHistory } from 'react-router-dom'
-import { firebase_app } from '../../data/config'
-import {useAuth0} from '@auth0/auth0-react'
-import Bookmark from "../../layout/bookmark"
 import {Link} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+import { useSelector, useDispatch } from "react-redux";
+import {FileText, LogIn, Mail, User, MessageSquare, Bell, Minimize, Search, ShoppingCart, Minus, Plus, X, Facebook} from 'react-feather';
+import { setTranslations, setDefaultLanguage, setLanguageCookie, setLanguage, translate,} from 'react-switch-lang';
+import {InputGroup, InputGroupAddon, Button, ModalHeader, ModalBody, ModalFooter, Modal, FormGroup, Label, Input, Form, Spinner} from 'reactstrap';
+
+//Local
+import man from '../../assets/images/dashboard/profile.jpg'
+import Bookmark from "../../layout/bookmark"
+
 import {
-  setTranslations,
-  setDefaultLanguage,
-  setLanguageCookie,
-  setLanguage,
-  translate,
-} from 'react-switch-lang';
-import {  Modal, ModalHeader, ModalBody,Form,FormGroup,Input,Label,Button,TabContent,TabPane,InputGroup, InputGroupAddon} from 'reactstrap'
-import {Password,SignIn, EmailAddress,RememberPassword,ForgotPassword ,CreateAccount,FIREBASE,AUTH0,JWT,LoginWithJWT } from '../../constant';
-import {English,Deutsch,Español,Français,Português,简体中文,Notification,DeliveryProcessing,OrderComplete,TicketsGenerated,DeliveryComplete,CheckAllNotification,ViewAll,MessageBox,EricaHughes,KoriThomas,Admin,Account,Inbox,Taskboard,LogOut,AinChavez,CheckOut,ShopingBag,OrderTotal,GoToShopingBag} from '../../constant'
+  English,
+  Deutsch,
+  Español,
+  Français,
+  Português,
+  简体中文,
+  Notification,
+  DeliveryProcessing,
+  OrderComplete,
+  TicketsGenerated,
+  DeliveryComplete,
+  CheckAllNotification,
+  ViewAll,
+  MessageBox,
+  EricaHughes,
+  KoriThomas,
+  Admin,
+  Account,
+  Inbox,
+  Taskboard,
+  LogOut,
+  AinChavez,
+  CheckOut,
+  ShopingBag,
+  OrderTotal,
+  GoToShopingBag,
+  Password,
+} from '../../constant'
 
 import en from '../../assets/i18n/en.json';
 import es from '../../assets/i18n/es.json';
@@ -24,17 +47,20 @@ import fr from '../../assets/i18n/fr.json';
 import du from '../../assets/i18n/du.json';
 import cn from '../../assets/i18n/cn.json';
 import ae from '../../assets/i18n/ae.json';
+import {selectShowLoadingLoginModal, selectShowLoginModal, selectUser} from "../../redux/auth/selector";
+import {login, setShowLoginModal, setUser} from "../../redux/auth/action";
+import {validateEmail} from "../../utils/validations";
 
 setTranslations({ en, es, pt, fr, du, cn, ae });
 setDefaultLanguage('en');
 setLanguageCookie();
 
-const Rightbar = (props) => {    
- 
+const Rightbar = (props) => {
+  const dispatch = useDispatch()
   const history = useHistory();
-  const [profile, setProfile] = useState('');
-  const [logueado, setLogueado] = useState(false);
-  const [name, setName] = useState('')
+  const user = useSelector(selectUser) // Aqui obtenemos el objeto user del reducer.
+  const showLoginModal = useSelector(selectShowLoginModal)
+  const showLoadingLoginModal = useSelector(selectShowLoadingLoginModal)
   const [searchresponsive, setSearchresponsive] = useState(false)
   const [langdropdown, setLangdropdown] = useState(false)
   const [moonlight, setMoonlight] = useState(false)
@@ -42,16 +68,8 @@ const Rightbar = (props) => {
   const [cartDropdown, setCartDropDown] = useState(false)
   const [notificationDropDown, setNotificationDropDown] = useState(false)
   const [chatDropDown, setChatDropDown] = useState(false)
-  const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading,setLoading] = useState(false) 
-  const [togglePassword,setTogglePassword] = useState(false)
-  
-  // auth0 profile
-  const {logout} = useAuth0()
-  const authenticated = JSON.parse(localStorage.getItem("authenticated"));
-  const auth0_profile = JSON.parse(localStorage.getItem("auth0_profile"))
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
 
   const handleSetLanguage = (key) => {
     setLanguage(key);
@@ -59,28 +77,10 @@ const Rightbar = (props) => {
   };
 
   useEffect(() => {
-    setProfile(localStorage.getItem('profileURL') || man);
-    setName(localStorage.getItem('Name'))
     if(localStorage.getItem("layout_version") === "dark-only"){
       setMoonlight(true)
     }
   }, []);
-
-  const Logout_From_Firebase = () => {
-    localStorage.removeItem('profileURL')
-    localStorage.removeItem('token');
-    firebase_app.auth().signOut()
-    history.push(`${process.env.PUBLIC_URL}/dasboard/default`)
-  }
-
-  const  Logout_From_Auth0 = () =>  {
-    localStorage.removeItem("auth0_profile")
-    localStorage.setItem("authenticated",false)
-    setLogueado(false)
-    setName('Entrar')
-    history.push(`${process.env.PUBLIC_URL}/dasboard/default`)
-    logout()
-  }
 
   const RedirectToChats = () => {
     history.push(`${process.env.PUBLIC_URL}/app/chat-app`)
@@ -146,14 +146,28 @@ const Rightbar = (props) => {
       localStorage.setItem('layout_version', 'dark-only');
     }
   }
-  
-  const openModal = () => {
-    setOpen(true)
-  };
 
-  const onCloseModal = () => {
-    setOpen(false)
-  };
+  const onLoginClickHandler = () => {
+    dispatch(setShowLoginModal(!showLoginModal))
+  }
+
+  const onSigInHandler = () => {
+    if(!validateEmail(email.trim())){
+      console.log('Email no esta en la forma correcta'); //TODO: mostrar error feedback en el formulario
+      return;
+    }
+    if(password.trim() === ''){
+      console.log('Password is required'); //TODO: mostrar error feedback en el formulario
+      return;
+    }
+    //TODO: mostrar cargando, crear HOC para axios
+    dispatch(login(email, password))
+  }
+
+  const onLogoutHandler = () => {
+    dispatch(setUser(null))
+    //TODO: borrar user del secure local storage.
+  }
 
   return (
     <Fragment>
@@ -179,9 +193,8 @@ const Rightbar = (props) => {
             </div>
           </li>
           <li><span className="header-search"><Search onClick={() => SeacrhResposive(searchresponsive)} /></span></li>
-          <li className="onhover-dropdown" onClick={() => setNotificationDropDown(!notificationDropDown)}>
-            <div className="notification-box" onClick={() => openModal()}><Bell /><span className="badge badge-pill badge-secondary">2</span></div>
-            { logueado ? 
+          <li className="onhover-dropdown">
+            <div className="notification-box" onClick={() => setNotificationDropDown(!notificationDropDown)}><Bell /><span className="badge badge-pill badge-secondary">2</span></div>
             <ul className={`notification-dropdown onhover-show-div ${notificationDropDown ? "active" : ""}`}>
               <li>
                 <Bell />
@@ -201,16 +214,14 @@ const Rightbar = (props) => {
               </li>
               <li><button className="btn btn-primary" >{CheckAllNotification}</button>
               </li>
-            </ul>:''}
+            </ul>
           </li>
-          {/*<Bookmark/>*/}
+          <Bookmark/>
           <li>
             <div className="mode" onClick={() => MoonlightToggle(moonlight)}><i className={`fa ${moonlight ? 'fa-lightbulb-o' : 'fa-moon-o'}`}></i></div>
           </li>
-          <li className="cart-nav onhover-dropdown" onClick={() => openModal()}>
-          
+          <li className="cart-nav onhover-dropdown">
             <div className="cart-box" onClick={() => setCartDropDown(!cartDropdown)}><ShoppingCart/><span className="badge badge-pill badge-primary">{"2"}</span></div>
-            { logueado ? 
             <ul className={`cart-dropdown onhover-show-div ${cartDropdown ? "active" : ""}`}>
               <li>
                 <h6 className="mb-0 f-20">{ShopingBag}</h6><ShoppingCart/>
@@ -221,13 +232,13 @@ const Rightbar = (props) => {
                     <p>{"Yellow(#fcb102)"}</p>
                     <div className="qty-box">
                       <InputGroup>
-                          <InputGroupAddon addonType="prepend">
-                              <button className="btn quantity-left-minus" type="button" data-type="minus" data-field=""><Minus/></button>
-                          </InputGroupAddon>
-                            <input className="form-control input-number" type="text" name="quantity" defaultValue="1"/>
-                          <InputGroupAddon addonType="prepend">
-                              <button className="btn quantity-right-plus" type="button" data-type="plus" data-field=""><Plus/></button>
-                          </InputGroupAddon>
+                        <InputGroupAddon addonType="prepend">
+                          <button className="btn quantity-left-minus" type="button" data-type="minus" data-field=""><Minus/></button>
+                        </InputGroupAddon>
+                        <input className="form-control input-number" type="text" name="quantity" defaultValue="1"/>
+                        <InputGroupAddon addonType="prepend">
+                          <button className="btn quantity-right-plus" type="button" data-type="plus" data-field=""><Plus/></button>
+                        </InputGroupAddon>
                       </InputGroup>
                     </div>
                     <h6 className="text-right text-muted">{"$299.00"}</h6>
@@ -241,13 +252,13 @@ const Rightbar = (props) => {
                     <p>{"Yellow(#fcb102)"}</p>
                     <div className="qty-box">
                       <InputGroup>
-                          <InputGroupAddon addonType="prepend">
-                            <button className="btn quantity-left-minus" type="button" data-type="minus" data-field=""><Minus/></button>
-                          </InputGroupAddon>
-                          <input className="form-control input-number" type="text" name="quantity" defaultValue="1"/>
-                          <InputGroupAddon addonType="prepend">
-                            <button className="btn quantity-right-plus" type="button" data-type="plus" data-field=""><Plus/></button>
-                          </InputGroupAddon>
+                        <InputGroupAddon addonType="prepend">
+                          <button className="btn quantity-left-minus" type="button" data-type="minus" data-field=""><Minus/></button>
+                        </InputGroupAddon>
+                        <input className="form-control input-number" type="text" name="quantity" defaultValue="1"/>
+                        <InputGroupAddon addonType="prepend">
+                          <button className="btn quantity-right-plus" type="button" data-type="plus" data-field=""><Plus/></button>
+                        </InputGroupAddon>
                       </InputGroup>
                     </div>
                     <h6 className="text-right text-muted">{"$299.00"}</h6>
@@ -264,11 +275,9 @@ const Rightbar = (props) => {
                 <Link to={`${process.env.PUBLIC_URL}/app/ecommerce/product`}><Button color="primary" className="btn btn-block view-cart">{GoToShopingBag}</Button></Link>
                 <Link to={`${process.env.PUBLIC_URL}/app/ecommerce/checkout`}><Button color="secondary" className="btn-block view-cart mt-2">{CheckOut}</Button></Link>
               </li>
-            </ul>:''
-          }
+            </ul>
           </li>
           <li className="onhover-dropdown" onClick={() => setChatDropDown(!chatDropDown)}><MessageSquare />
-          { logueado ? 
             <ul className={`chat-dropdown onhover-show-div ${chatDropDown ? "active" : ""}`}>
               <li>
                 <MessageSquare />
@@ -302,83 +311,54 @@ const Rightbar = (props) => {
                 </div>
               </li>
               <li className="text-center"> <button className="btn btn-primary">{ViewAll}     </button></li>
-            </ul>:''
-           }
+            </ul>
           </li>
           <li className="maximize"><a className="text-dark" href="#javascript" onClick={goFull}><Minimize /></a></li>
-          {/*<li className="profile-nav onhover-dropdown p-0">
+          {user && <li className="profile-nav onhover-dropdown p-0">
             <div className="media profile-media">
-              <img className="b-r-10" src={ logueado ?  profile : 'lgo' } alt="" />
-              <div className="media-body"><span>{ logueado ?  "Hola," + " " + name : 'Registrese' }</span>
-                <p className="mb-0 font-roboto">{ logueado ? 'Administrador' : 'Invitado' } <i className="middle fa fa-angle-down"></i></p>
+              <img className="b-r-10" src={man} alt=""/>
+              <div className="media-body"><span>{user.name}</span>
+                <p className="mb-0 font-roboto">Menu <i className="middle fa fa-angle-down"></i></p>
               </div>
             </div>
-            { logueado ? 
             <ul className="profile-dropdown onhover-show-div">
-             
-              <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/users/userProfile`)}><User /><span>{Account} </span></li>
-              <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/email-app`)}><Mail /><span>{Inbox}</span></li>
-              <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/todo-app/todo`)}><FileText /><span>{Taskboard}</span></li>
-              <li onClick={authenticated ? Logout_From_Auth0 : Logout_From_Auth0 }><LogIn /><span>{LogOut}</span></li> :
-            
-            </ul> 
-             : 
-             <ul className="profile-dropdown onhover-show-div">
-                <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/login`)}><User /><span>Login </span></li>
-             </ul> 
-            }
-          </li>*/}
+              <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/users/userProfile`)}>
+                <User/><span>{Account} </span></li>
+              <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/email-app`)}>
+                <Mail/><span>{Inbox}</span></li>
+              <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/todo-app/todo`)}>
+                <FileText/><span>{Taskboard}</span></li>
+              <li onClick={onLogoutHandler}><LogIn/><span>{LogOut}</span></li>
+            </ul>
+          </li>
+          }
+          {!user &&
+            <Button className="btn-pill btn-air-primary" color="primary" onClick={onLoginClickHandler}>Login</Button>
+          }
+
+          <Modal isOpen={showLoginModal} toggle={onLoginClickHandler} centered>
+            <ModalHeader toggle={onLoginClickHandler}>
+              Sign in
+            </ModalHeader>
+            <ModalBody>
+              <Form className="theme-form">
+                <p>{"Enter your email & password to login"}</p>
+                <FormGroup>
+                  <Label className="col-form-label">Email Address</Label>
+                  <Input className="form-control" type="email" required="" value={email} onChange={(e) => {setEmail(e.target.value)}} />
+                </FormGroup>
+                <FormGroup>
+                  <Label className="col-form-label">{Password}</Label>
+                  <Input className="form-control" type={"password"} value={password} onChange={(e) => {setPassword(e.target.value)}}/>
+                </FormGroup>
+              </Form>
+            </ModalBody>
+            <ModalFooter>
+              { showLoadingLoginModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSigInHandler}>Sign in</Button>}
+            </ModalFooter>
+          </Modal>
         </ul>
       </div>
-      <Modal className="modal-lg modal-dialog-centered product-modal" isOpen={open}>
-        <ModalBody>
-          <ModalHeader toggle={onCloseModal}>
-                      
-          </ModalHeader>
-          <div className="login-card">
-           <div>
-            <div className="login-main login-tab"> 
-               <Form className="theme-form">
-                  <p>{"Enter your email & password to login"}</p>
-                      <FormGroup>
-                        <Label className="col-form-label">{EmailAddress}</Label>
-                        <Input className="form-control" type="email" required="" onChange={e => setEmail(e.target.value)} defaultValue={email} />
-                      </FormGroup>
-                      <FormGroup>
-                        <Label className="col-form-label">{Password}</Label>
-                        <Input className="form-control" type={togglePassword ?  "text" : "password"} onChange={e => setPassword(e.target.value)} defaultValue={password} required=""/>
-                        <div className="show-hide" onClick={() => setTogglePassword(!togglePassword)}><span className={togglePassword ? "" : "show"}></span></div>
-                      </FormGroup>
-                      <div className="form-group mb-0">
-                        <div className="checkbox ml-3">
-                          <Input id="checkbox1" type="checkbox"/>
-                          <Label className="text-muted" for="checkbox1">{RememberPassword}</Label>
-                        </div><a className="link" href="#javascript">{ForgotPassword}</a>
-                        {selected === "firebase" ?
-                        <Button color="primary" className="btn-block" disabled={loading ? loading : loading} >{loading ? "LOADING..." : SignIn }</Button>
-                        :
-                        <Button color="primary" className="btn-block" >{LoginWithJWT}</Button>
-                        }
-                      </div>
-                      <h6 className="text-muted mt-4 or">{"Or Sign in with"}</h6>
-                      <div className="social mt-4">
-                        <div className="btn-showcase">
-                          <Button color="light"  >
-                            <Facebook className="txt-fb" />
-                          </Button>
-                          <Button color="light"  >
-                            <i className="icon-social-google txt-googleplus"></i>
-                          </Button>
-                          
-                        </div>
-                      </div>
-                      <p className="mt-4 mb-0">{"Don't have account?"}<a className="ml-2" href="#javascript">{CreateAccount}</a></p>
-                    </Form>
-                    </div>
-                    </div>
-                    </div>
-        </ModalBody>
-      </Modal>
     </Fragment>
 
   );
