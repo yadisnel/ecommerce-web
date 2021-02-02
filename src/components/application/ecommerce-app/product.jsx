@@ -12,12 +12,12 @@ import { getVisibleproducts } from '../../../services/ecommerce.service'
 import  {watchfetchProducts} from "../../../redux/ecommerce/product/action"
 import { Filters,ShowingProducts,Featured,LowestPrices,HighestPrices,NotFoundData,ProductDetails,Quantity,AddToCart,ViewDetails,ProductSizeArray } from "../../../constant";
 
-const Product = (props) => {
+const Products = (props) => {
 
   const history = useHistory();
   const dispatch = useDispatch()
   const data = useSelector(content => content.data.productItems);
-  // eslint-disable-next-line 
+  // eslint-disable-next-line
   const [layoutColumns, setLayoutColumns] = useState(3);
 
   const symbol = useSelector(content => content.data.symbol);
@@ -117,12 +117,12 @@ const Product = (props) => {
 
   const addcart = (product, qty) => {
     dispatch({ type: ADD_TO_CART, payload: { product, qty } })
-    history.push(`${process.env.PUBLIC_URL}/app/ecommerce/cart`);
+    history.push(`/cart`);
   }
 
   const addWishList = (product) => {
     dispatch({ type: ADD_TO_WISHLIST, payload: { product } });
-    history.push(`${process.env.PUBLIC_URL}/app/ecommerce/wishlist`);
+    history.push('/wishlist');
   }
 
   const handleSearchKeyword = (keyword) => {
@@ -132,7 +132,7 @@ const Product = (props) => {
 
   const onClickDetailPage = (product) => {
     const id = product.id;
-    history.push(`${process.env.PUBLIC_URL}/app/ecommerce/product-page/${id}`)
+    history.push(`/product-page/${id}`)
   }
 
 
@@ -288,7 +288,7 @@ const Product = (props) => {
                           <div className="product-hover">
                             <ul>
                               <li>
-                                <Link to={`${process.env.PUBLIC_URL}/app/ecommerce/cart`}>
+                                <Link to={`/cart`}>
                                   <Button color="default" onClick={() => addcart(item, quantity)}>
                                     <i className="icon-shopping-cart"></i>
                                   </Button>
@@ -301,7 +301,7 @@ const Product = (props) => {
                                 </Button>
                               </li>
                               <li>
-                                <Link to={`${process.env.PUBLIC_URL}/app/ecommerce/wishlist`}>
+                                <Link to={'/wishlist'}>
                                   <Button color="default" onClick={() => addWishList(item)} >
                                     <i className="icon-heart"></i>
                                   </Button>
@@ -323,7 +323,7 @@ const Product = (props) => {
                           <div className="product-price">
                             {symbol} {item.price}
                             <del>{symbol} {item.discountPrice}</del>
-                            
+
                           </div>
                         </div>
                       </div>
@@ -350,7 +350,7 @@ const Product = (props) => {
                           </div>
                           <div className="product-size">
                             <ul>
-                              {ProductSizeArray.map((items,i) => 
+                              {ProductSizeArray.map((items,i) =>
                                 <li key={i}>
                                   <Button color="outline-light">{items}</Button>
                                 </li>
@@ -377,7 +377,7 @@ const Product = (props) => {
                               </InputGroup>
                             </fieldset>
                             <div className="addcart-btn">
-                              <Link to={`${process.env.PUBLIC_URL}/app/ecommerce/cart`}><Button color="primary" className="mr-2 mt-2" onClick={() => addcart(singleProduct, quantity)}>{AddToCart}</Button></Link>
+                              <Link to={`/cart`}><Button color="primary" className="mr-2 mt-2" onClick={() => addcart(singleProduct, quantity)}>{AddToCart}</Button></Link>
                               <Button onClick={() => onClickDetailPage(singleProduct)} color="primary" className="mr-2 mt-2">{ViewDetails}</Button>
                             </div>
                           </div>
@@ -395,4 +395,4 @@ const Product = (props) => {
   );
 }
 
-export default Product;
+export default Products;

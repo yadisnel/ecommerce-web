@@ -1,27 +1,26 @@
-import { SIGNIN_REQUEST, SIGNUP_REQUEST, SIGNUP_SUCCESFULL } from '../actionTypes';
+import {SET_USER, SHOW_LOADING_LOGIN_MODAL, SHOW_LOGIN_MODAL,SHOW_SIGNUP_MODAL} from "../actionTypes";
 
 const INIT_STATE = {
-    usersignin: [],
-    usersignup: [],
-    usersucces: 'no',
-    singleItem: [],
-    list:[]
+    user: null,
+    showLoginModal: false,
+    showLoadingLoginModal: false,
+    showSignUpModal: false
 };
 
 export default (state = INIT_STATE, action) => {
 
     switch (action.type) {
-        
-        case SIGNIN_REQUEST:
-            return { ...state, usersignin: action.payload };
 
-        case SIGNUP_REQUEST:
-            return { ...state, usersignup: action.payload };
+        case SET_USER:
+            return { ...state, user:action.payload };
+        case SHOW_LOGIN_MODAL:
+            return { ...state, showLoginModal:action.payload };
+        case SHOW_LOADING_LOGIN_MODAL:
+            return { ...state, showLoadingLoginModal:action.payload };
+        case SHOW_SIGNUP_MODAL:
+            return { ...state, showSignUpModal:action.payload };
+    
 
-        case SIGNUP_SUCCESFULL:
-            const succes= state.usersucces
-            return { ...state, succes: 'si' };
-            
         default:
             return state;
     }
