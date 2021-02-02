@@ -193,10 +193,6 @@ const Rightbar = (props) => {
     //TODO: borrar user del secure local storage.
   }
 
-  const show = () => {
-    console.log('hola')
-  }
-
   return (
     <Fragment>
       <div className="nav-right col-8 pull-right right-header p-0">
@@ -387,7 +383,7 @@ const Rightbar = (props) => {
               </Form>
             </ModalBody>
             <ModalFooter>
-              <a href="#" className="alert-link" onClick={onSignUpClickHandler}>Do you Have Create Account ?</a>
+              <a href="#" className="alert-link" onClick={onSignUpClickHandler}>Don´t have account yet?</a>
               { showLoadingLoginModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSigInHandler}>Sign in</Button>}
             </ModalFooter>
           </Modal>
@@ -397,7 +393,7 @@ const Rightbar = (props) => {
             </ModalHeader>
             <ModalBody>
               <Form className="theme-form">
-                <p>{"Enter your email & password to login"}</p>
+                <p>{"Enter your email & password to sign up"}</p>
                 <FormGroup>
                   <Label className="col-form-label">Email Address</Label>
                   <Input className="form-control" type="email" required="" value={email} onChange={(e) => {setEmail(e.target.value)}} />
@@ -409,7 +405,7 @@ const Rightbar = (props) => {
               </Form>
             </ModalBody>
             <ModalFooter>
-              <a href="#" className="alert-link" onClick={onBackClickHandler}>Do you Have Account ?</a>
+              <a href="#" className="alert-link" onClick={onBackClickHandler}>Do you have an account already?</a>
               { showLoadingLoginModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSigInHandler}>Sign up</Button>}
             </ModalFooter>
           </Modal>
