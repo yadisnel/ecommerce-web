@@ -1,4 +1,4 @@
-import {SET_USER, SHOW_LOADING_LOGIN_MODAL, SHOW_LOGIN_MODAL, SIGN_IN_REQUEST} from "../actionTypes";
+import {SET_USER, SHOW_LOADING_LOGIN_MODAL, SHOW_LOGIN_MODAL, SIGN_IN_REQUEST,SHOW_SIGNUP_MODAL} from "../actionTypes";
 
 //Esta accion solo guarda el objeto user en el reducer
 export const setUser = (user) => ({
@@ -14,6 +14,11 @@ export const login = (username, password) => ({
 
 export const setShowLoginModal = (show) => ({
     type: SHOW_LOGIN_MODAL,
+    payload: show
+})
+
+export const setShowSignUpModal = (show) => ({
+    type: SHOW_SIGNUP_MODAL,
     payload: show
 })
 

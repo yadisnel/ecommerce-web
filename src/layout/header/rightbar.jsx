@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from "react-redux";
 import {FileText, LogIn, Mail, User, MessageSquare, Bell, Minimize, Search, ShoppingCart, Minus, Plus, X, Facebook} from 'react-feather';
 import { setTranslations, setDefaultLanguage, setLanguageCookie, setLanguage, translate,} from 'react-switch-lang';
-import {InputGroup, InputGroupAddon, Button, ModalHeader, ModalBody, ModalFooter, Modal, FormGroup, Label, Input, Form, Spinner} from 'reactstrap';
+import {InputGroup, Alert, InputGroupAddon, Button, ModalHeader, ModalBody, ModalFooter, Modal, FormGroup, Label, Input, Form, Spinner} from 'reactstrap';
 
 //Local
 import man from '../../assets/images/dashboard/profile.jpg'
@@ -47,8 +47,8 @@ import fr from '../../assets/i18n/fr.json';
 import du from '../../assets/i18n/du.json';
 import cn from '../../assets/i18n/cn.json';
 import ae from '../../assets/i18n/ae.json';
-import {selectShowLoadingLoginModal, selectShowLoginModal, selectUser} from "../../redux/auth/selector";
-import {login, setShowLoginModal, setUser} from "../../redux/auth/action";
+import {selectShowLoadingLoginModal, selectShowLoginModal, selectUser,selectSignUpModal} from "../../redux/auth/selector";
+import {login, setShowLoginModal, setUser, setShowSignUpModal} from "../../redux/auth/action";
 import {validateEmail} from "../../utils/validations";
 
 setTranslations({ en, es, pt, fr, du, cn, ae });
@@ -60,6 +60,7 @@ const Rightbar = (props) => {
   const history = useHistory();
   const user = useSelector(selectUser) // Aqui obtenemos el objeto user del reducer.
   const showLoginModal = useSelector(selectShowLoginModal)
+  const showSignUpModal = useSelector(selectSignUpModal)
   const showLoadingLoginModal = useSelector(selectShowLoadingLoginModal)
   const [searchresponsive, setSearchresponsive] = useState(false)
   const [langdropdown, setLangdropdown] = useState(false)
@@ -70,6 +71,12 @@ const Rightbar = (props) => {
   const [chatDropDown, setChatDropDown] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [correo, setCorreo] = useState(false);
+  const [contra, setContra] = useState(false);
+
+  const onDismiss = () => setCorreo(false);
+
+  const onDismissPass = () => setContra(false);
 
   const handleSetLanguage = (key) => {
     setLanguage(key);
@@ -151,14 +158,31 @@ const Rightbar = (props) => {
     dispatch(setShowLoginModal(!showLoginModal))
   }
 
+  const onBackClickHandler = () => {
+    dispatch(setShowSignUpModal(!showSignUpModal))
+    dispatch(setShowLoginModal(!showLoginModal))
+  }
+
+  const onSignUpClickHandler = () => {
+    dispatch(setShowLoginModal(!showLoginModal))
+    dispatch(setShowSignUpModal(!showSignUpModal))
+  }
+
+  const onSignUpCloseHandler = () => {
+    dispatch(setShowSignUpModal(!showSignUpModal))
+  }
+
+
   const onSigInHandler = () => {
     if(!validateEmail(email.trim())){
       console.log('Email no esta en la forma correcta'); //TODO: mostrar error feedback en el formulario
-      return;
+      setCorreo(true);
+      return
     }
     if(password.trim() === ''){
-      console.log('Password is required'); //TODO: mostrar error feedback en el formulario
-      return;
+      console.log('El password es requerido'); //TODO: mostrar error feedback en el formulario
+      setContra(true);
+      return
     }
     //TODO: mostrar cargando, crear HOC para axios
     dispatch(login(email, password))
@@ -167,6 +191,10 @@ const Rightbar = (props) => {
   const onLogoutHandler = () => {
     dispatch(setUser(null))
     //TODO: borrar user del secure local storage.
+  }
+
+  const show = () => {
+    console.log('hola')
   }
 
   return (
@@ -333,9 +361,8 @@ const Rightbar = (props) => {
           </li>
           }
           {!user &&
-            <Button className="btn-pill btn-air-primary" color="primary" onClick={onLoginClickHandler}>Login</Button>
+          <Button className="btn-pill btn-air-primary" color="primary" onClick={onLoginClickHandler}>Login</Button>
           }
-
           <Modal isOpen={showLoginModal} toggle={onLoginClickHandler} centered>
             <ModalHeader toggle={onLoginClickHandler}>
               Sign in
@@ -351,10 +378,39 @@ const Rightbar = (props) => {
                   <Label className="col-form-label">{Password}</Label>
                   <Input className="form-control" type={"password"} value={password} onChange={(e) => {setPassword(e.target.value)}}/>
                 </FormGroup>
+                <Alert color="danger" isOpen={correo} toggle={onDismiss}>
+                  Email no esta en la forma correcta.
+                </Alert>
+                <Alert color="danger" isOpen={contra} toggle={onDismissPass}>
+                  El password es Obligatorio.
+                </Alert>
               </Form>
             </ModalBody>
             <ModalFooter>
+              <a href="#" className="alert-link" onClick={onSignUpClickHandler}>Do you Have Create Account ?</a>
               { showLoadingLoginModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSigInHandler}>Sign in</Button>}
+            </ModalFooter>
+          </Modal>
+          <Modal isOpen={showSignUpModal} toggle={onSignUpClickHandler} centered>
+            <ModalHeader toggle={onSignUpCloseHandler}>
+              Sign Up
+            </ModalHeader>
+            <ModalBody>
+              <Form className="theme-form">
+                <p>{"Enter your email & password to login"}</p>
+                <FormGroup>
+                  <Label className="col-form-label">Email Address</Label>
+                  <Input className="form-control" type="email" required="" value={email} onChange={(e) => {setEmail(e.target.value)}} />
+                </FormGroup>
+                <FormGroup>
+                  <Label className="col-form-label">{Password}</Label>
+                  <Input className="form-control" type={"password"} value={password} onChange={(e) => {setPassword(e.target.value)}}/>
+                </FormGroup>
+              </Form>
+            </ModalBody>
+            <ModalFooter>
+              <a href="#" className="alert-link" onClick={onBackClickHandler}>Do you Have Account ?</a>
+              { showLoadingLoginModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSigInHandler}>Sign up</Button>}
             </ModalFooter>
           </Modal>
         </ul>
