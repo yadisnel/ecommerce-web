@@ -56,28 +56,40 @@ setDefaultLanguage('en');
 setLanguageCookie();
 
 const Rightbar = (props) => {
-  const dispatch = useDispatch()
-  const history = useHistory();
-  const user = useSelector(selectUser) // Aqui obtenemos el objeto user del reducer.
-  const showLoginModal = useSelector(selectShowLoginModal)
-  const showSignUpModal = useSelector(selectSignUpModal)
-  const showLoadingLoginModal = useSelector(selectShowLoadingLoginModal)
-  const [searchresponsive, setSearchresponsive] = useState(false)
-  const [langdropdown, setLangdropdown] = useState(false)
-  const [moonlight, setMoonlight] = useState(false)
-  const [selected, setSelected] = useState("en")
-  const [cartDropdown, setCartDropDown] = useState(false)
-  const [notificationDropDown, setNotificationDropDown] = useState(false)
-  const [chatDropDown, setChatDropDown] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [correo, setCorreo] = useState(false);
-  const [contra, setContra] = useState(false);
-
-  const onDismiss = () => setCorreo(false);
-
-  const onDismissPass = () => setContra(false);
-
+   const dispatch = useDispatch()
+   const history = useHistory();
+   const user = useSelector(selectUser) // Aqui obtenemos el objeto user del reducer.
+   const showLoginModal = useSelector(selectShowLoginModal)
+   const showSignUpModal = useSelector(selectSignUpModal)
+   const showLoadingLoginModal = useSelector(selectShowLoadingLoginModal)
+   const [searchresponsive, setSearchresponsive] = useState(false)
+   const [langdropdown, setLangdropdown] = useState(false)
+   const [moonlight, setMoonlight] = useState(false)
+   const [selected, setSelected] = useState("en")
+   const [cartDropdown, setCartDropDown] = useState(false)
+   const [notificationDropDown, setNotificationDropDown] = useState(false)
+   const [chatDropDown, setChatDropDown] = useState(false)
+  /*------Hooks que controlan Singin y SignUp---------------*/
+   const [email, setEmail] = useState('')
+   const [password, setPassword] = useState('')
+   const [emailsignup, setEmailSignUp] = useState('')
+   const [passwordsignup, setPasswordSignUp] = useState('')
+   const [confirmpasswordsignup, setConfirmPasswordSignup] = useState('')
+  /*----------Hooks para flujo de alerts--------------------*/
+   const [correo, setCorreo] = useState(false);
+   const [contra, setContra] = useState(false);
+   const [correosignup, setCorreoSignup] = useState(false);
+   const [contrasignup, setContraSignup] = useState(false);
+   const [passtrue, setPasstrue] = useState(false);
+   const [required, setRequired] = useState(false);
+  /*-------------------------------------------------------*/
+   const onDismiss = () => setCorreo(false);
+   const onDismissPass = () => setContra(false);
+   const onDismissCorreosignup = () => setCorreoSignup(false);
+   const onDismissContrasignup = () => setContraSignup(false);
+   const onDismissPasstrue = () => setPasstrue(false);
+   const onDismissRequired = () => setRequired(false);
+  /*-----------------------------------------------------*/
   const handleSetLanguage = (key) => {
     setLanguage(key);
     setSelected(key)
@@ -162,12 +174,12 @@ const Rightbar = (props) => {
     dispatch(setShowSignUpModal(!showSignUpModal))
     dispatch(setShowLoginModal(!showLoginModal))
   }
-
+  
   const onSignUpClickHandler = () => {
     dispatch(setShowLoginModal(!showLoginModal))
     dispatch(setShowSignUpModal(!showSignUpModal))
   }
-
+  
   const onSignUpCloseHandler = () => {
     dispatch(setShowSignUpModal(!showSignUpModal))
   }
@@ -188,9 +200,36 @@ const Rightbar = (props) => {
     dispatch(login(email, password))
   }
 
+  const onSignUpHandler = () => {
+    if(!validateEmail(emailsignup.trim())){
+      console.log('Email no esta en la forma correcta'); //TODO: mostrar error feedback en el formulario
+      setCorreoSignup(true);
+      return
+    }
+    if(passwordsignup.trim() === ''){
+      console.log('El password es requerido'); //TODO: mostrar error feedback en el formulario
+      setContraSignup(true);
+      return
+    }
+
+    if(confirmpasswordsignup.trim() === ''){
+      console.log('El password es requerido'); //TODO: mostrar error feedback en el formulario
+      setRequired(true);
+      return
+    }
+    if(passwordsignup != confirmpasswordsignup ){
+       setPasstrue(true)
+    }
+    //distpatch para axios 
+  }
+
   const onLogoutHandler = () => {
     dispatch(setUser(null))
     //TODO: borrar user del secure local storage.
+  }
+
+  const show = () => {
+    console.log('hola')
   }
 
   return (
@@ -357,7 +396,7 @@ const Rightbar = (props) => {
           </li>
           }
           {!user &&
-          <Button className="btn-pill btn-air-primary" color="primary" onClick={onLoginClickHandler}>Login</Button>
+            <Button className="btn-pill btn-air-primary" color="primary" onClick={onLoginClickHandler}>Login</Button>
           }
           <Modal isOpen={showLoginModal} toggle={onLoginClickHandler} centered>
             <ModalHeader toggle={onLoginClickHandler}>
@@ -375,15 +414,15 @@ const Rightbar = (props) => {
                   <Input className="form-control" type={"password"} value={password} onChange={(e) => {setPassword(e.target.value)}}/>
                 </FormGroup>
                 <Alert color="danger" isOpen={correo} toggle={onDismiss}>
-                  Email no esta en la forma correcta.
+                   Email no esta en la forma correcta.
                 </Alert>
                 <Alert color="danger" isOpen={contra} toggle={onDismissPass}>
-                  El password es Obligatorio.
+                   El password es Obligatorio.
                 </Alert>
               </Form>
             </ModalBody>
             <ModalFooter>
-              <a href="#" className="alert-link" onClick={onSignUpClickHandler}>Don´t have account yet?</a>
+              <a href="#" className="alert-link" onClick={onSignUpClickHandler}>Do you Have Create Account ?</a>
               { showLoadingLoginModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSigInHandler}>Sign in</Button>}
             </ModalFooter>
           </Modal>
@@ -393,20 +432,36 @@ const Rightbar = (props) => {
             </ModalHeader>
             <ModalBody>
               <Form className="theme-form">
-                <p>{"Enter your email & password to sign up"}</p>
+                <p>{"Enter your email & password to login"}</p>
                 <FormGroup>
                   <Label className="col-form-label">Email Address</Label>
-                  <Input className="form-control" type="email" required="" value={email} onChange={(e) => {setEmail(e.target.value)}} />
+                  <Input className="form-control" type="email" required="" value={emailsignup} onChange={(e) => {setEmailSignUp(e.target.value)}} />
                 </FormGroup>
                 <FormGroup>
                   <Label className="col-form-label">{Password}</Label>
-                  <Input className="form-control" type={"password"} value={password} onChange={(e) => {setPassword(e.target.value)}}/>
+                  <Input className="form-control" type={"password"} value={passwordsignup} onChange={(e) => {setPasswordSignUp(e.target.value)}}/>
                 </FormGroup>
+                <FormGroup>
+                  <Label className="col-form-label">Verify Password</Label>
+                  <Input className="form-control" type={"password"} value={confirmpasswordsignup} onChange={(e) => {setConfirmPasswordSignup(e.target.value)}}/>
+                </FormGroup>
+                <Alert color="danger" isOpen={ correosignup } toggle={onDismissCorreosignup}>
+                  The email is required, please insert it !!.
+                </Alert>
+                <Alert color="danger" isOpen={ contrasignup } toggle={onDismissContrasignup}>
+                  The password is mandatory, please insert it !!.
+                </Alert>
+                <Alert color="danger" isOpen={ passtrue } toggle={onDismissPasstrue}>
+                 Passwords do not match, please rectify !!.
+                </Alert>
+                <Alert color="danger" isOpen={ required } toggle={onDismissRequired}>
+                 Password needs to be verified, please insert it 
+                </Alert>
               </Form>
             </ModalBody>
             <ModalFooter>
-              <a href="#" className="alert-link" onClick={onBackClickHandler}>Do you have an account already?</a>
-              { showLoadingLoginModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSigInHandler}>Sign up</Button>}
+              <a href="#" className="alert-link" onClick={onBackClickHandler}>Do you Have Account ?</a>
+              { showLoadingLoginModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSignUpHandler}>Sign up</Button>}
             </ModalFooter>
           </Modal>
         </ul>

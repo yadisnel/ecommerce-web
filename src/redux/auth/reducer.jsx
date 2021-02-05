@@ -19,7 +19,7 @@ export default (state = INIT_STATE, action) => {
             return { ...state, showLoadingLoginModal:action.payload };
         case SHOW_SIGNUP_MODAL:
             return { ...state, showSignUpModal:action.payload };
-
+    
 
         default:
             return state;
