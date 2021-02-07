@@ -1,10 +1,11 @@
-import {SET_USER, SHOW_LOADING_LOGIN_MODAL, SHOW_LOGIN_MODAL,SHOW_SIGNUP_MODAL} from "../actionTypes";
+import {SET_USER, SHOW_LOADING_LOGIN_MODAL, SHOW_LOGIN_MODAL,SHOW_SIGNUP_MODAL,SHOW_LOADING_SIGNUP_MODAL} from "../actionTypes";
 
 const INIT_STATE = {
     user: null,
     showLoginModal: false,
     showLoadingLoginModal: false,
-    showSignUpModal: false
+    showSignUpModal: false,
+    showLoadingSignupModal: false
 };
 
 export default (state = INIT_STATE, action) => {
@@ -17,6 +18,8 @@ export default (state = INIT_STATE, action) => {
             return { ...state, showLoginModal:action.payload };
         case SHOW_LOADING_LOGIN_MODAL:
             return { ...state, showLoadingLoginModal:action.payload };
+        case SHOW_LOADING_SIGNUP_MODAL:
+            return { ...state, showLoadingSignupModal:action.payload }
         case SHOW_SIGNUP_MODAL:
             return { ...state, showSignUpModal:action.payload };
     

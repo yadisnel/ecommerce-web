@@ -1,6 +1,6 @@
 import {call,put, takeLatest, takeEvery} from "redux-saga/effects";
 import {SIGN_IN_REQUEST, SIGN_UP_REQUEST} from "../actionTypes";
-import {setShowLoadingLoginModal, setShowLoginModal, setUser} from "./action";
+import {setShowLoadingLoginModal, setShowLoginModal, setUser,setShowSignUpModal,setShowLoadingSignUpModal} from "./action";
 import {fetchLogin} from "../../api";
 
 const delay = (ms) => new Promise(res => setTimeout(res, ms))
@@ -41,8 +41,34 @@ function* SignIn(action) {
   }
 }
 
-function* SignUp() {
-// TODO: signup saga logic
+function* SignUp(action) {
+   try {
+     const { username, password, confirmpassword} = action.payload;
+     //yield put(setShowLoadingLoginModal(true))
+     yield put(setShowLoadingSignUpModal(true))
+     const mockedUser = { name: username} 
+    yield put(setUser(mockedUser))
+    yield put(setShowSignUpModal(false))
+    
+   } catch (error) {
+    yield put(setShowLoadingLoginModal(false))
+    if (error.response) {
+      //TODO manejar el error y mostrar mensaje al usuario.
+      if(error.response.status === 400){
+        if(error.response.data.detail === 'Incorrect email or password'){
+          // TODO: credenciales incorrectas, mostrar error.
+        }
+      }
+      // Request made and server responded
+      console.log('error data', error.response.data);
+      console.log('error status', error.response.status);
+      console.log('error headers', error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.log('error request', error.request);
+    }
+    console.log('Error fetching login', error)
+   }
 }
 
 export function* WatcherAuthApp() {

@@ -47,8 +47,8 @@ import fr from '../../assets/i18n/fr.json';
 import du from '../../assets/i18n/du.json';
 import cn from '../../assets/i18n/cn.json';
 import ae from '../../assets/i18n/ae.json';
-import {selectShowLoadingLoginModal, selectShowLoginModal, selectUser,selectSignUpModal} from "../../redux/auth/selector";
-import {login, setShowLoginModal, setUser, setShowSignUpModal} from "../../redux/auth/action";
+import {selectShowLoadingLoginModal, selectShowLoginModal, selectUser,selectSignUpModal,selectShowLoadingSignupModal} from "../../redux/auth/selector";
+import {login, setShowLoginModal, setUser, setShowSignUpModal,signup} from "../../redux/auth/action";
 import {validateEmail} from "../../utils/validations";
 
 setTranslations({ en, es, pt, fr, du, cn, ae });
@@ -62,6 +62,7 @@ const Rightbar = (props) => {
    const showLoginModal = useSelector(selectShowLoginModal)
    const showSignUpModal = useSelector(selectSignUpModal)
    const showLoadingLoginModal = useSelector(selectShowLoadingLoginModal)
+   const showLoadingSignupModal = useSelector(selectShowLoadingSignupModal)
    const [searchresponsive, setSearchresponsive] = useState(false)
    const [langdropdown, setLangdropdown] = useState(false)
    const [moonlight, setMoonlight] = useState(false)
@@ -221,6 +222,8 @@ const Rightbar = (props) => {
        setPasstrue(true)
     }
     //distpatch para axios 
+    dispatch(signup(emailsignup, passwordsignup,confirmpasswordsignup))
+    
   }
 
   const onLogoutHandler = () => {
@@ -461,7 +464,7 @@ const Rightbar = (props) => {
             </ModalBody>
             <ModalFooter>
               <a href="#" className="alert-link" onClick={onBackClickHandler}>Do you Have Account ?</a>
-              { showLoadingLoginModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSignUpHandler}>Sign up</Button>}
+              { showLoadingSignupModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSignUpHandler}>Sign up</Button>}
             </ModalFooter>
           </Modal>
         </ul>

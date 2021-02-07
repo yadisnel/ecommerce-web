@@ -17,6 +17,19 @@ export const fetchLogin = (username, password) => {
     return axios.post(loginURL, params, config)
 }
 
+export const fetchSignUP = (username, password, confirmpassword) => {
+    const params = new URLSearchParams()
+    params.append('username', username)
+    params.append('password', password)
+    params.append('password', confirmpassword)
+    const config = {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    }
+    return axios.post(loginURL, params, config)
+}
+
 export const fetchProductApi = () => {
     return axios.get(`${process.env.PUBLIC_URL}/api/product.json`);
 };
