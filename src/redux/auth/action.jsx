@@ -9,12 +9,12 @@ export const setUser = (user) => ({
 //Esta accion dispara la saga SignIn porque hay un watcher escuchando SIGN_IN_REQUEST, el payload va a ser recibido por la saga
 export const login = (username, password) => ({
     type: SIGN_IN_REQUEST,
-    payload: { username, password } 
+    payload: { username, password }
 })
 
-export const signup = (username, password, confirmpassword) => ({
+export const signup = (username, password) => ({
     type: SIGN_UP_REQUEST,
-    payload: { username, password ,confirmpassword} 
+    payload: { username, password}
 })
 
 export const setShowLoginModal = (show) => ({

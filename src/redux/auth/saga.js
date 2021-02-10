@@ -17,7 +17,7 @@ function* SignIn(action) {
     //const user = yield fetchLogin(username, password)
     //console.log('osiel', user)
     //TODO: guardar user de forma segura en el local storage para hacer login automatico.
-    
+
     yield put(setShowLoginModal(false))
     yield put(setShowLoadingLoginModal(false))
   } catch (error) {
@@ -43,15 +43,15 @@ function* SignIn(action) {
 
 function* SignUp(action) {
    try {
-     const { username, password, confirmpassword} = action.payload;
+     const { username, password} = action.payload;
      //yield put(setShowLoadingLoginModal(true))
      //yield put(setShowLoadingSignUpModal(true))
-     //const mockedUser = { name: username} 
+     //const mockedUser = { name: username}
     //yield put(setUser(mockedUser))
     //yield put(setShowSignUpModal(false))
-    const user = yield fetchSignUP(username, password, confirmpassword)
+    const user = yield fetchSignUP(username, password)
     console.log(user)
-    
+
    } catch (error) {
     yield put(setShowLoadingLoginModal(false))
     if (error.response) {

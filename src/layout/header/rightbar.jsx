@@ -175,12 +175,12 @@ const Rightbar = (props) => {
     dispatch(setShowSignUpModal(!showSignUpModal))
     dispatch(setShowLoginModal(!showLoginModal))
   }
-  
+
   const onSignUpClickHandler = () => {
     dispatch(setShowLoginModal(!showLoginModal))
     dispatch(setShowSignUpModal(!showSignUpModal))
   }
-  
+
   const onSignUpCloseHandler = () => {
     dispatch(setShowSignUpModal(!showSignUpModal))
   }
@@ -218,12 +218,12 @@ const Rightbar = (props) => {
       setRequired(true);
       return
     }
-    if(passwordsignup != confirmpasswordsignup ){
+    if(passwordsignup !== confirmpasswordsignup ){
        setPasstrue(true)
     }
-    //distpatch para axios 
-    dispatch(signup(emailsignup, passwordsignup,confirmpasswordsignup))
-    
+    //distpatch para axios
+    dispatch(signup(emailsignup, passwordsignup))
+
   }
 
   const onLogoutHandler = () => {
@@ -458,7 +458,7 @@ const Rightbar = (props) => {
                  Passwords do not match, please rectify !!.
                 </Alert>
                 <Alert color="danger" isOpen={ required } toggle={onDismissRequired}>
-                 Password needs to be verified, please insert it 
+                 Password needs to be verified, please insert it
                 </Alert>
               </Form>
             </ModalBody>

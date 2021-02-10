@@ -1,9 +1,10 @@
 import axios from "axios";
 
-export const baseURL = 'https://ecommerce-api.yadisnel.com/accounts/register-with-email'
+export const baseURL = 'https://ecommerce-api.yadisnel.com'
 
 //auth
 export const loginURL = baseURL + '/token';
+export const signupUrl = baseURL + '/accounts/register-with-email'
 
 export const fetchLogin = (username, password) => {
     const params = new URLSearchParams()
@@ -11,23 +12,23 @@ export const fetchLogin = (username, password) => {
     params.append('password', password)
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json'
         }
     }
     return axios.post(loginURL, params, config)
 }
 
-export const fetchSignUP = (username, password, confirmpassword) => {
+export const fetchSignUP = (username, password) => {
     const params = new URLSearchParams()
     params.append('username', username)
     params.append('password', password)
-    params.append('confirmpassword', password)
+    params.append('locale', 'es_ES') //TODO: pasar el locale cuando este disponible en la app.
     const config = {
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/json'
         }
     }
-    return axios.post(loginURL, params, config)
+    return axios.post(signupUrl, params, config)
 }
 
 export const fetchProductApi = () => {
