@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const baseURL = 'https://ecommerce-api.yadisnel.com'
+export const baseURL = 'https://ecommerce-api.yadisnel.com/accounts/register-with-email'
 
 //auth
 export const loginURL = baseURL + '/token';
@@ -21,7 +21,7 @@ export const fetchSignUP = (username, password, confirmpassword) => {
     const params = new URLSearchParams()
     params.append('username', username)
     params.append('password', password)
-    params.append('password', confirmpassword)
+    params.append('confirmpassword', password)
     const config = {
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

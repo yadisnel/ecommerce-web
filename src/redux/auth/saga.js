@@ -1,7 +1,7 @@
 import {call,put, takeLatest, takeEvery} from "redux-saga/effects";
 import {SIGN_IN_REQUEST, SIGN_UP_REQUEST} from "../actionTypes";
 import {setShowLoadingLoginModal, setShowLoginModal, setUser,setShowSignUpModal,setShowLoadingSignUpModal} from "./action";
-import {fetchLogin} from "../../api";
+import {fetchLogin,fetchSignUP} from "../../api";
 
 const delay = (ms) => new Promise(res => setTimeout(res, ms))
 
@@ -45,10 +45,12 @@ function* SignUp(action) {
    try {
      const { username, password, confirmpassword} = action.payload;
      //yield put(setShowLoadingLoginModal(true))
-     yield put(setShowLoadingSignUpModal(true))
-     const mockedUser = { name: username} 
-    yield put(setUser(mockedUser))
-    yield put(setShowSignUpModal(false))
+     //yield put(setShowLoadingSignUpModal(true))
+     //const mockedUser = { name: username} 
+    //yield put(setUser(mockedUser))
+    //yield put(setShowSignUpModal(false))
+    const user = yield fetchSignUP(username, password, confirmpassword)
+    console.log(user)
     
    } catch (error) {
     yield put(setShowLoadingLoginModal(false))
