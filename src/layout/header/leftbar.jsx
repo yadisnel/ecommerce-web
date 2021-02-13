@@ -222,17 +222,17 @@ const Leftbar = (props) => {
           </li>
           <li className="level-menu outside"><a className={levelMenu ? "nav-link active" : "nav-link"} href="#javascript" onClick={() => OnLevelMenu(levelMenu)}><Inbox/><span>{LevelMenu}</span></a>
             <ul className="header-level-menu menu-to-be-close" style={levelMenu ? { display: "" } : { display: "none" }}>
-              <li><Link to={`${process.env.PUBLIC_URL}/app/file-manager`}><GitPullRequest/><span>{FileManager}</span></Link></li>
+              <li><GitPullRequest/><span>{FileManager}</span></li>
               <li><a href="#javascript"><Users/><span>{"Users"}</span></a>
                 <ul className="header-level-sub-menu">
-                  <li><Link to={`${process.env.PUBLIC_URL}/app/users/userProfile`}><User/><span>{UserProfile}</span></Link></li>
-                  <li><Link to={`${process.env.PUBLIC_URL}/app/users/userEdit`}><UserMinus/><span>{UserEdit}</span></Link></li>
-                  <li><Link to={`${process.env.PUBLIC_URL}/app/users/userCards`}><UserCheck/><span>{UsersCards}</span></Link></li>
+                  <li><User/><span>{UserProfile}</span></li>
+                  <li><UserMinus/><span>{UserEdit}</span></li>
+                  <li><UserCheck/><span>{UsersCards}</span></li>
                 </ul>
               </li>
-              <li><Link to={`${process.env.PUBLIC_URL}/app/kanban-board`}><Airplay/><span>{KanbanBoard}</span></Link></li>
-              <li><Link to={`${process.env.PUBLIC_URL}/app/bookmark`}><Heart/><span>{Bookmark}</span></Link></li>
-              <li><Link to={`${process.env.PUBLIC_URL}/app/social-app`}><Zap/><span>{SocialApp}</span></Link></li>
+              <li><Airplay/><span>{KanbanBoard}</span></li>
+              <li><Heart/><span>{Bookmark}</span></li>
+              <li><Zap/><span>{SocialApp}</span></li>
             </ul>
           </li>
         </ul>

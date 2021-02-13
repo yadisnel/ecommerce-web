@@ -22,7 +22,6 @@ const Sidebar = (props) => {
     handleResize();
 
     const currentUrl = window.location.pathname;
-    console.log('osielll',currentUrl)
     mainmenu.map(items => {
       items.Items.filter((Items) => {
         if (Items.path === currentUrl)
@@ -87,7 +86,7 @@ const Sidebar = (props) => {
   }
 
   const toggletNavActive = (item) => {
-
+    
     if(window.innerWidth <= 991){
       document.querySelector(".page-header").className = "page-header close_icon";
       document.querySelector(".sidebar-wrapper").className = "sidebar-wrapper close_icon "
@@ -166,12 +165,12 @@ const Sidebar = (props) => {
     document.querySelector(".page-header").className = "page-header close_icon";
     document.querySelector(".sidebar-wrapper").className = "sidebar-wrapper close_icon"
   }
-
+  
   return (
     <Fragment>
       <div className="sidebar-wrapper">
         <div className="logo-wrapper">
-          <Link to={`/`}>
+          <Link to={`${process.env.PUBLIC_URL}/dashboard/default`}>
             <img className="img-fluid for-light" src={require("../../assets/images/logo/logo.png")} alt="" />
             <img className="img-fluid for-dark" src={require("../../assets/images/logo/logo_dark.png")} alt="" />
           </Link>
@@ -179,7 +178,7 @@ const Sidebar = (props) => {
           <div className="toggle-sidebar" onClick={() => openCloseSidebar(sidebartoogle)}><Grid className="status_toggle middle sidebar-toggle" /></div>
         </div>
         <div className="logo-icon-wrapper">
-          <Link to={`/`}><img className="img-fluid" src={require("../../assets/images/logo/logo-icon.png")} alt="" /></Link>
+          <Link to={`${process.env.PUBLIC_URL}/dashboard/default`}><img className="img-fluid" src={require("../../assets/images/logo/logo-icon.png")} alt="" /></Link>
         </div>
         <nav className="sidebar-main">
             <div className="left-arrow" onClick={scrollToLeft}><ArrowLeft /></div>
@@ -248,6 +247,10 @@ const Sidebar = (props) => {
                                     {(childrenItem.type === 'link') ?
                                       <Link  to={childrenItem.path} className={`${childrenItem.active ? 'active' : ''}`} onClick={() => toggletNavActive(childrenItem)}>{props.t(childrenItem.title)}</Link>
                                       : ''}
+
+                                    {(childrenItem.type === 'exteral_link') ?
+                                    <a  href={childrenItem.path}  >{props.t(childrenItem.title)}</a>
+                                    : ''}
 
                                     {childrenItem.children ?
                                       <ul className="nav-sub-childmenu submenu-content"

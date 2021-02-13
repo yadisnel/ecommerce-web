@@ -159,8 +159,8 @@
         &:hover {
           .header-level-sub-menu {
             opacity: 1;
-            transition: 0.5s;
             box-shadow: 0 0 37px rgba(8, 21, 66, 0.1);
+            animation: fadeInLeft 300ms ease-in-out;
           }
         }
 
@@ -189,6 +189,7 @@
           border-radius: 5px;
           top: 0;
           opacity: 0;
+          animation: fadeInLeft 300ms ease-in-out;
         }
       }
     }

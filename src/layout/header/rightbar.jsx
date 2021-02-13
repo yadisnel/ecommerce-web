@@ -1,44 +1,16 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import {Link} from 'react-router-dom'
-import { useHistory } from 'react-router-dom'
-import { useSelector, useDispatch } from "react-redux";
-import {FileText, LogIn, Mail, User, MessageSquare, Bell, Minimize, Search, ShoppingCart, Minus, Plus, X, Facebook} from 'react-feather';
-import { setTranslations, setDefaultLanguage, setLanguageCookie, setLanguage, translate,} from 'react-switch-lang';
-import {InputGroup, Alert, InputGroupAddon, Button, ModalHeader, ModalBody, ModalFooter, Modal, FormGroup, Label, Input, Form, Spinner} from 'reactstrap';
-
-//Local
 import man from '../../assets/images/dashboard/profile.jpg'
+import { FileText, LogIn, Mail, User, MessageSquare, Bell, Minimize, Search, ShoppingCart, Minus, Plus, X } from 'react-feather';
 import Bookmark from "../../layout/bookmark"
-
 import {
-  English,
-  Deutsch,
-  Español,
-  Français,
-  Português,
-  简体中文,
-  Notification,
-  DeliveryProcessing,
-  OrderComplete,
-  TicketsGenerated,
-  DeliveryComplete,
-  CheckAllNotification,
-  ViewAll,
-  MessageBox,
-  EricaHughes,
-  KoriThomas,
-  Admin,
-  Account,
-  Inbox,
-  Taskboard,
-  LogOut,
-  AinChavez,
-  CheckOut,
-  ShopingBag,
-  OrderTotal,
-  GoToShopingBag,
-  Password,
-} from '../../constant'
+  setTranslations,
+  setDefaultLanguage,
+  setLanguageCookie,
+  setLanguage,
+  translate,
+} from 'react-switch-lang';
+
+import {English,Deutsch,Español,Français,Português,简体中文,Notification,DeliveryProcessing,OrderComplete,TicketsGenerated,DeliveryComplete,CheckAllNotification,ViewAll,MessageBox,EricaHughes,KoriThomas,Admin,Account,Inbox,Taskboard,LogOut,AinChavez,CheckOut,ShopingBag,OrderTotal,GoToShopingBag} from '../../constant'
 
 import en from '../../assets/i18n/en.json';
 import es from '../../assets/i18n/es.json';
@@ -47,50 +19,21 @@ import fr from '../../assets/i18n/fr.json';
 import du from '../../assets/i18n/du.json';
 import cn from '../../assets/i18n/cn.json';
 import ae from '../../assets/i18n/ae.json';
-import {selectShowLoadingLoginModal, selectShowLoginModal, selectUser,selectSignUpModal,selectShowLoadingSignupModal} from "../../redux/auth/selector";
-import {login, setShowLoginModal, setUser, setShowSignUpModal,signup} from "../../redux/auth/action";
-import {validateEmail} from "../../utils/validations";
+import { InputGroup, InputGroupAddon, Button } from 'reactstrap';
 
 setTranslations({ en, es, pt, fr, du, cn, ae });
 setDefaultLanguage('en');
 setLanguageCookie();
 
-const Rightbar = (props) => {
-   const dispatch = useDispatch()
-   const history = useHistory();
-   const user = useSelector(selectUser) // Aqui obtenemos el objeto user del reducer.
-   const showLoginModal = useSelector(selectShowLoginModal)
-   const showSignUpModal = useSelector(selectSignUpModal)
-   const showLoadingLoginModal = useSelector(selectShowLoadingLoginModal)
-   const showLoadingSignupModal = useSelector(selectShowLoadingSignupModal)
-   const [searchresponsive, setSearchresponsive] = useState(false)
-   const [langdropdown, setLangdropdown] = useState(false)
-   const [moonlight, setMoonlight] = useState(false)
-   const [selected, setSelected] = useState("en")
-   const [cartDropdown, setCartDropDown] = useState(false)
-   const [notificationDropDown, setNotificationDropDown] = useState(false)
-   const [chatDropDown, setChatDropDown] = useState(false)
-  /*------Hooks que controlan Singin y SignUp---------------*/
-   const [email, setEmail] = useState('')
-   const [password, setPassword] = useState('')
-   const [emailsignup, setEmailSignUp] = useState('')
-   const [passwordsignup, setPasswordSignUp] = useState('')
-   const [confirmpasswordsignup, setConfirmPasswordSignup] = useState('')
-  /*----------Hooks para flujo de alerts--------------------*/
-   const [correo, setCorreo] = useState(false);
-   const [contra, setContra] = useState(false);
-   const [correosignup, setCorreoSignup] = useState(false);
-   const [contrasignup, setContraSignup] = useState(false);
-   const [passtrue, setPasstrue] = useState(false);
-   const [required, setRequired] = useState(false);
-  /*-------------------------------------------------------*/
-   const onDismiss = () => setCorreo(false);
-   const onDismissPass = () => setContra(false);
-   const onDismissCorreosignup = () => setCorreoSignup(false);
-   const onDismissContrasignup = () => setContraSignup(false);
-   const onDismissPasstrue = () => setPasstrue(false);
-   const onDismissRequired = () => setRequired(false);
-  /*-----------------------------------------------------*/
+const Rightbar = (props) => {    
+  const [searchresponsive, setSearchresponsive] = useState(false)
+  const [langdropdown, setLangdropdown] = useState(false)
+  const [moonlight, setMoonlight] = useState(false)
+  const [selected, setSelected] = useState("en")
+  const [cartDropdown, setCartDropDown] = useState(false)
+  const [notificationDropDown, setNotificationDropDown] = useState(false)
+  const [chatDropDown, setChatDropDown] = useState(false)
+
   const handleSetLanguage = (key) => {
     setLanguage(key);
     setSelected(key)
@@ -101,18 +44,6 @@ const Rightbar = (props) => {
       setMoonlight(true)
     }
   }, []);
-
-  const RedirectToChats = () => {
-    history.push(`${process.env.PUBLIC_URL}/app/chat-app`)
-  }
-
-  const RedirectToCart = () => {
-    history.push(`${process.env.PUBLIC_URL}/app/ecommerce/cart`)
-  }
-
-  const UserMenuRedirect = (redirect) => {
-    history.push(redirect)
-  }
 
   //full screen function
   function goFull() {
@@ -165,74 +96,6 @@ const Rightbar = (props) => {
       document.body.className = "dark-only"
       localStorage.setItem('layout_version', 'dark-only');
     }
-  }
-
-  const onLoginClickHandler = () => {
-    dispatch(setShowLoginModal(!showLoginModal))
-  }
-
-  const onBackClickHandler = () => {
-    dispatch(setShowSignUpModal(!showSignUpModal))
-    dispatch(setShowLoginModal(!showLoginModal))
-  }
-
-  const onSignUpClickHandler = () => {
-    dispatch(setShowLoginModal(!showLoginModal))
-    dispatch(setShowSignUpModal(!showSignUpModal))
-  }
-
-  const onSignUpCloseHandler = () => {
-    dispatch(setShowSignUpModal(!showSignUpModal))
-  }
-
-
-  const onSigInHandler = () => {
-    if(!validateEmail(email.trim())){
-      console.log('Email no esta en la forma correcta'); //TODO: mostrar error feedback en el formulario
-      setCorreo(true);
-      return
-    }
-    if(password.trim() === ''){
-      console.log('El password es requerido'); //TODO: mostrar error feedback en el formulario
-      setContra(true);
-      return
-    }
-    //TODO: mostrar cargando, crear HOC para axios
-    dispatch(login(email, password))
-  }
-
-  const onSignUpHandler = () => {
-    if(!validateEmail(emailsignup.trim())){
-      console.log('Email no esta en la forma correcta'); //TODO: mostrar error feedback en el formulario
-      setCorreoSignup(true);
-      return
-    }
-    if(passwordsignup.trim() === ''){
-      console.log('El password es requerido'); //TODO: mostrar error feedback en el formulario
-      setContraSignup(true);
-      return
-    }
-
-    if(confirmpasswordsignup.trim() === ''){
-      console.log('El password es requerido'); //TODO: mostrar error feedback en el formulario
-      setRequired(true);
-      return
-    }
-    if(passwordsignup !== confirmpasswordsignup ){
-       setPasstrue(true)
-    }
-    //distpatch para axios
-    dispatch(signup(emailsignup, passwordsignup))
-
-  }
-
-  const onLogoutHandler = () => {
-    dispatch(setUser(null))
-    //TODO: borrar user del secure local storage.
-  }
-
-  const show = () => {
-    console.log('hola')
   }
 
   return (
@@ -293,18 +156,18 @@ const Rightbar = (props) => {
                 <h6 className="mb-0 f-20">{ShopingBag}</h6><ShoppingCart/>
               </li>
               <li className="mt-0">
-                <div className="media" onClick={RedirectToCart}><img className="img-fluid rounded-circle mr-3 img-60" src={require("../../assets//images/ecommerce/01.jpg")} alt=""/>
+                <div className="media" ><img className="img-fluid rounded-circle mr-3 img-60" src={require("../../assets//images/ecommerce/01.jpg")} alt=""/>
                   <div className="media-body"><span>{"V-Neck Shawl Collar Woman's Solid T-Shirt"}</span>
                     <p>{"Yellow(#fcb102)"}</p>
                     <div className="qty-box">
                       <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                          <button className="btn quantity-left-minus" type="button" data-type="minus" data-field=""><Minus/></button>
-                        </InputGroupAddon>
-                        <input className="form-control input-number" type="text" name="quantity" defaultValue="1"/>
-                        <InputGroupAddon addonType="prepend">
-                          <button className="btn quantity-right-plus" type="button" data-type="plus" data-field=""><Plus/></button>
-                        </InputGroupAddon>
+                          <InputGroupAddon addonType="prepend">
+                              <button className="btn quantity-left-minus" type="button" data-type="minus" data-field=""><Minus/></button>
+                          </InputGroupAddon>
+                            <input className="form-control input-number" type="text" name="quantity" defaultValue="1"/>
+                          <InputGroupAddon addonType="prepend">
+                              <button className="btn quantity-right-plus" type="button" data-type="plus" data-field=""><Plus/></button>
+                          </InputGroupAddon>
                       </InputGroup>
                     </div>
                     <h6 className="text-right text-muted">{"$299.00"}</h6>
@@ -313,18 +176,18 @@ const Rightbar = (props) => {
                 </div>
               </li>
               <li className="mt-0">
-                <div className="media" onClick={RedirectToCart}><img className="img-fluid rounded-circle mr-3 img-60" src={require("../../assets//images/ecommerce/03.jpg")} alt=""/>
+                <div className="media" ><img className="img-fluid rounded-circle mr-3 img-60" src={require("../../assets//images/ecommerce/03.jpg")} alt=""/>
                   <div className="media-body"><span>{"V-Neck Shawl Collar Woman's Solid T-Shirt"}</span>
                     <p>{"Yellow(#fcb102)"}</p>
                     <div className="qty-box">
                       <InputGroup>
-                        <InputGroupAddon addonType="prepend">
-                          <button className="btn quantity-left-minus" type="button" data-type="minus" data-field=""><Minus/></button>
-                        </InputGroupAddon>
-                        <input className="form-control input-number" type="text" name="quantity" defaultValue="1"/>
-                        <InputGroupAddon addonType="prepend">
-                          <button className="btn quantity-right-plus" type="button" data-type="plus" data-field=""><Plus/></button>
-                        </InputGroupAddon>
+                          <InputGroupAddon addonType="prepend">
+                            <button className="btn quantity-left-minus" type="button" data-type="minus" data-field=""><Minus/></button>
+                          </InputGroupAddon>
+                          <input className="form-control input-number" type="text" name="quantity" defaultValue="1"/>
+                          <InputGroupAddon addonType="prepend">
+                            <button className="btn quantity-right-plus" type="button" data-type="plus" data-field=""><Plus/></button>
+                          </InputGroupAddon>
                       </InputGroup>
                     </div>
                     <h6 className="text-right text-muted">{"$299.00"}</h6>
@@ -338,8 +201,8 @@ const Rightbar = (props) => {
                 </div>
               </li>
               <li>
-                <Link to={`${process.env.PUBLIC_URL}/app/ecommerce/product`}><Button color="primary" className="btn btn-block view-cart">{GoToShopingBag}</Button></Link>
-                <Link to={`${process.env.PUBLIC_URL}/app/ecommerce/checkout`}><Button color="secondary" className="btn-block view-cart mt-2">{CheckOut}</Button></Link>
+                <Button color="primary" className="btn btn-block view-cart">{GoToShopingBag}</Button>
+                <Button color="secondary" className="btn-block view-cart mt-2">{CheckOut}</Button>
               </li>
             </ul>
           </li>
@@ -349,7 +212,7 @@ const Rightbar = (props) => {
                 <MessageSquare />
                 <h6 className="f-18 mb-0">{MessageBox}</h6>
               </li>
-              <li onClick={RedirectToChats}>
+              <li>
                 <div className="media"><img className="img-fluid rounded-circle mr-3" src={require("../../assets/images/user/1.jpg")} alt="" />
                   <div className="status-circle online"></div>
                   <div className="media-body"><span>{EricaHughes}</span>
@@ -358,7 +221,7 @@ const Rightbar = (props) => {
                   <p className="f-12 font-success">{"58 mins ago"}</p>
                 </div>
               </li>
-              <li onClick={RedirectToChats}>
+              <li>
                 <div className="media"><img className="img-fluid rounded-circle mr-3" src={require("../../assets/images/user/2.jpg")} alt="" />
                   <div className="status-circle online"></div>
                   <div className="media-body"><span>{KoriThomas}</span>
@@ -367,7 +230,7 @@ const Rightbar = (props) => {
                   <p className="f-12 font-success">{"1 hr ago"}</p>
                 </div>
               </li>
-              <li onClick={RedirectToChats}>
+              <li>
                 <div className="media"><img className="img-fluid rounded-circle mr-3" src={require("../../assets/images/user/4.jpg")} alt="" />
                   <div className="status-circle offline"></div>
                   <div className="media-body"><span>{AinChavez}</span>
@@ -380,93 +243,20 @@ const Rightbar = (props) => {
             </ul>
           </li>
           <li className="maximize"><a className="text-dark" href="#javascript" onClick={goFull}><Minimize /></a></li>
-          {user && <li className="profile-nav onhover-dropdown p-0">
+          <li className="profile-nav onhover-dropdown p-0">
             <div className="media profile-media">
-              <img className="b-r-10" src={man} alt=""/>
-              <div className="media-body"><span>{user.name}</span>
-                <p className="mb-0 font-roboto">Menu <i className="middle fa fa-angle-down"></i></p>
+              <img className="b-r-10" src={man} alt="" />
+              <div className="media-body"><span>{'Emay Walter'}</span>
+                <p className="mb-0 font-roboto">{Admin} <i className="middle fa fa-angle-down"></i></p>
               </div>
             </div>
             <ul className="profile-dropdown onhover-show-div">
-              <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/users/userProfile`)}>
-                <User/><span>{Account} </span></li>
-              <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/email-app`)}>
-                <Mail/><span>{Inbox}</span></li>
-              <li onClick={() => UserMenuRedirect(`${process.env.PUBLIC_URL}/app/todo-app/todo`)}>
-                <FileText/><span>{Taskboard}</span></li>
-              <li onClick={onLogoutHandler}><LogIn/><span>{LogOut}</span></li>
+              <li><User /><span>{Account} </span></li>
+              <li><Mail /><span>{Inbox}</span></li>
+              <li><FileText /><span>{Taskboard}</span></li>
+              <li><LogIn /><span>{LogOut}</span></li>
             </ul>
           </li>
-          }
-          {!user &&
-            <Button className="btn-pill btn-air-primary" color="primary" onClick={onLoginClickHandler}>Login</Button>
-          }
-          <Modal isOpen={showLoginModal} toggle={onLoginClickHandler} centered>
-            <ModalHeader toggle={onLoginClickHandler}>
-              Sign in
-            </ModalHeader>
-            <ModalBody>
-              <Form className="theme-form">
-                <p>{"Enter your email & password to login"}</p>
-                <FormGroup>
-                  <Label className="col-form-label">Email Address</Label>
-                  <Input className="form-control" type="email" required="" value={email} onChange={(e) => {setEmail(e.target.value)}} />
-                </FormGroup>
-                <FormGroup>
-                  <Label className="col-form-label">{Password}</Label>
-                  <Input className="form-control" type={"password"} value={password} onChange={(e) => {setPassword(e.target.value)}}/>
-                </FormGroup>
-                <Alert color="danger" isOpen={correo} toggle={onDismiss}>
-                   Email no esta en la forma correcta.
-                </Alert>
-                <Alert color="danger" isOpen={contra} toggle={onDismissPass}>
-                   El password es Obligatorio.
-                </Alert>
-              </Form>
-            </ModalBody>
-            <ModalFooter>
-              <a href="#" className="alert-link" onClick={onSignUpClickHandler}>Do you Have Create Account ?</a>
-              { showLoadingLoginModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSigInHandler}>Sign in</Button>}
-            </ModalFooter>
-          </Modal>
-          <Modal isOpen={showSignUpModal} toggle={onSignUpClickHandler} centered>
-            <ModalHeader toggle={onSignUpCloseHandler}>
-              Sign Up
-            </ModalHeader>
-            <ModalBody>
-              <Form className="theme-form">
-                <p>{"Enter your email & password to login"}</p>
-                <FormGroup>
-                  <Label className="col-form-label">Email Address</Label>
-                  <Input className="form-control" type="email" required="" value={emailsignup} onChange={(e) => {setEmailSignUp(e.target.value)}} />
-                </FormGroup>
-                <FormGroup>
-                  <Label className="col-form-label">{Password}</Label>
-                  <Input className="form-control" type={"password"} value={passwordsignup} onChange={(e) => {setPasswordSignUp(e.target.value)}}/>
-                </FormGroup>
-                <FormGroup>
-                  <Label className="col-form-label">Verify Password</Label>
-                  <Input className="form-control" type={"password"} value={confirmpasswordsignup} onChange={(e) => {setConfirmPasswordSignup(e.target.value)}}/>
-                </FormGroup>
-                <Alert color="danger" isOpen={ correosignup } toggle={onDismissCorreosignup}>
-                  The email is required, please insert it !!.
-                </Alert>
-                <Alert color="danger" isOpen={ contrasignup } toggle={onDismissContrasignup}>
-                  The password is mandatory, please insert it !!.
-                </Alert>
-                <Alert color="danger" isOpen={ passtrue } toggle={onDismissPasstrue}>
-                 Passwords do not match, please rectify !!.
-                </Alert>
-                <Alert color="danger" isOpen={ required } toggle={onDismissRequired}>
-                 Password needs to be verified, please insert it
-                </Alert>
-              </Form>
-            </ModalBody>
-            <ModalFooter>
-              <a href="#" className="alert-link" onClick={onBackClickHandler}>Do you Have Account ?</a>
-              { showLoadingSignupModal ? <Spinner color="primary" /> : <Button color="primary"  onClick={onSignUpHandler}>Sign up</Button>}
-            </ModalFooter>
-          </Modal>
         </ul>
       </div>
     </Fragment>
