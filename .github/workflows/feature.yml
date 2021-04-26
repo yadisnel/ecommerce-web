@@ -43,7 +43,7 @@ jobs:
     - name: Config AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_DEV_REGION }}
     - name: Upload to S3
@@ -51,7 +51,7 @@ jobs:
         aws s3 sync ./build s3://dev.app.ecommerce.com
       # aws cloudfront create-invalidation --distribution-id EE2WLH6AF0T3D --paths "/*"  
     - name: Serverless AWS authentication
-      run: sls config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: sls config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     - name: Create env file
       run: | # cp sample.env.yml env.yml
         cat > env.yml << EOF
