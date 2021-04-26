@@ -31,10 +31,6 @@ jobs:
 #      run: |
 #        pytest
     - name: Install Serverless Framework
-      with:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEV_REGION }}
       run: |
         sudo apt-get update
         sudo curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
