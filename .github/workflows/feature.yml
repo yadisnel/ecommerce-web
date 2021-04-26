@@ -42,8 +42,6 @@ jobs:
         sudo npm install -g serverless
         sudo npm install serverless-tag-resources
         sudo npm install --save serverless-python-requirements
-        sudo apt-get update
-        sudo pip install awscli
         sudo npm install
         sudo npm run build
     - name: Upload to S3
