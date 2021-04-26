@@ -1,49 +1,39 @@
-name: Deploy Prod
+name: Deploy Dev
 on:
   push:
     branches:
       - master
 jobs:
-  deploy-dev:
+  deploy-prod:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python 3.x
-      uses: actions/setup-python@v2
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
       with:
-        python-version: '3.8'
-        architecture: 'x64'
-    # You can test your matrix by printing the current Python version
-    - name: Display Python version
-      run: python -c "import sys; print(sys.version)"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-#    - name: Test with pytest
-#      run: |
-#        pytest
+        node-version: '12.x'
     - name: Install Serverless Framework
-      run: |
-        sudo apt-get update
-        sudo curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
-        sudo apt-get install -y nodejs zip
-        sudo npm install -g serverless
-        sudo npm install serverless-tag-resources
-        sudo npm install --save serverless-python-requirements
+      run: npm install -g serverless
     - name: Serverless AWS authentication
-      run: sls config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: sls config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     - name: Create env file
-      run: | # cp sample.env.yml env.yml
+      run: |
         cat > env.yml << EOF
         ${{ secrets.ENV }}
         EOF
+    - name: Install NPM dependencies
+      run: |
+        export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY }}
+        export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        export AWS_DEFAULT_REGION=${{ secrets.AWS_DEV_REGION }}
+        sudo apt-get update
+        sudo apt-get install -y zip python2.7 python2.7-dev build-essential python-pip
+        sudo pip install awscli
+        sudo npm install
+        sudo npm run build
+        sudo aws s3 cp dist/ s3://prod.ecommerce.com/ --recursive --include "*" --exclude "*.html" --exclude "*.json" --metadata-directive REPLACE --cache-control 'max-age=31536000'
+        sudo aws s3 cp dist/ s3://prod.ecommerce.com/ --recursive --exclude "*" --include "*.html" --include "*.json"
+        sudo aws cloudfront create-invalidation --distribution-id EE2WLH6AF0T3D --paths "/*"
+    - name: Install NPM dependencies
+      run: npm install
     - name: Deploy Cloud Resources
-      run: sls deploy -s prod --region ${{ secrets.AWS_PROD_REGION }}
+      run: sls deploy -s dev --region ${{ secrets.AWS_DEV_REGION }}
