@@ -26,12 +26,15 @@ jobs:
         export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
         export AWS_DEFAULT_REGION=${{ secrets.AWS_DEV_REGION }}
         sudo apt-get update
+        sudo apt-get install software-properties-common
+        sudo apt-add-repository universe
+        sudo apt-get update
         sudo apt-get install -y zip python2.7 python2.7-dev build-essential python-pip
         sudo pip install awscli
         sudo npm install
         sudo npm run build
-        sudo aws s3 cp dist/ s3://dev.ecommerce.com/ --recursive --include "*" --exclude "*.html" --exclude "*.json" --metadata-directive REPLACE --cache-control 'max-age=31536000'
-        sudo aws s3 cp dist/ s3://dev.ecommerce.com/ --recursive --exclude "*" --include "*.html" --include "*.json"
+        sudo aws s3 cp dist/ s3://dev.app.ecommerce.com/ --recursive --include "*" --exclude "*.html" --exclude "*.json" --metadata-directive REPLACE --cache-control 'max-age=31536000'
+        sudo aws s3 cp dist/ s3://dev.app.ecommerce.com/ --recursive --exclude "*" --include "*.html" --include "*.json"
         sudo aws cloudfront create-invalidation --distribution-id EE2WLH6AF0T3D --paths "/*"
     - name: Install NPM dependencies
       run: npm install
