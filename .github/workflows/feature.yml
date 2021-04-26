@@ -1,0 +1,39 @@
+name: Deploy Dev
+on:
+  push:
+    branches:
+      - feature/**
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: Install Serverless Framework
+      run: npm install -g serverless
+    - name: Serverless AWS authentication
+      run: sls config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    - name: Create env file
+      run: |
+        cat > env.yml << EOF
+        ${{ secrets.ENV }}
+        EOF
+    - name: Install NPM dependencies
+      run: |
+        export AWS_ACCESS_KEY_ID=${{ secrets.AWS_SECRET_KEY_ID }}
+        export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }}
+        export AWS_DEFAULT_REGION=${{ secrets.AWS_DEV_REGION }}
+        sudo apt-get update
+        sudo apt-get install -y zip python2.7 python2.7-dev build-essential python-pip
+        sudo pip install awscli
+        sudo npm install
+        sudo npm run build
+        sudo aws s3 cp dist/ s3://dev.ecommerce.com/ --recursive --include "*" --exclude "*.html" --exclude "*.json" --metadata-directive REPLACE --cache-control 'max-age=31536000'
+        sudo aws s3 cp dist/ s3://dev.ecommerce.com/ --recursive --exclude "*" --include "*.html" --include "*.json"
+        sudo aws cloudfront create-invalidation --distribution-id EE2WLH6AF0T3D --paths "/*"
+    - name: Install NPM dependencies
+      run: npm install
+    - name: Deploy Cloud Resources
+      run: sls deploy -s dev --region ${{ secrets.AWS_DEV_REGION }}
