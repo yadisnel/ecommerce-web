@@ -13,7 +13,6 @@ jobs:
       with:
         python-version: '3.8'
         architecture: 'x64'
-    # You can test your matrix by printing the current Python version
     - name: Display Python version
       run: python -c "import sys; print(sys.version)"
     - name: Install dependencies
@@ -48,8 +47,8 @@ jobs:
         aws-region: ${{ secrets.AWS_DEV_REGION }}
     - name: Upload to S3
       run: |
-        aws s3 sync ./build s3://dev.app.ecommerce.com
-      # aws cloudfront create-invalidation --distribution-id EE2WLH6AF0T3D --paths "/*"  
+        aws s3 sync ./build s3://${{ secrets.AWS_DEV_BUCKET }}
+        aws cloudfront create-invalidation --distribution-id E12PCTIQ9UYMD1 --paths "/*"  
     - name: Serverless AWS authentication
       run: sls config credentials --provider aws --key ${{ secrets.AWS_ACCESS_KEY_ID }} --secret ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     - name: Create env file
