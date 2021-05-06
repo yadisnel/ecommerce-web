@@ -1,9 +1,10 @@
 {
   "auth": {
-    "cognitoed5794ea": {
+    "ecommerceappc7ec0f9b": {
       "service": "Cognito",
-      "serviceType": "managed",
-      "providerPlugin": "awscloudformation"
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
     }
   },
   "analytics": {

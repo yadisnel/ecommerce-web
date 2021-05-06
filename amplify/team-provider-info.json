@@ -12,14 +12,14 @@
       "AmplifyAppId": "d1tu263lzir9pr"
     },
     "categories": {
-      "auth": {
-        "cognitoed5794ea": {}
-      },
       "hosting": {
         "amplifyhosting": {
           "appId": "d1tu263lzir9pr",
           "type": "cicd"
         }
+      },
+      "auth": {
+        "ecommerceappc7ec0f9b": {}
       }
     }
   }
