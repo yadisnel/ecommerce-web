@@ -12,6 +12,13 @@
       "providerPlugin": "awscloudformation"
     }
   },
+  "hosting": {
+    "amplifyhosting": {
+      "service": "amplifyhosting",
+      "type": "cicd",
+      "lastPushTimeStamp": "2021-05-06T12:16:46.420Z"
+    }
+  },
   "api": {
     "ecommerceapp": {
       "service": "AppSync",
@@ -28,13 +35,6 @@
           "additionalAuthenticationProviders": []
         }
       }
-    }
-  },
-  "hosting": {
-    "amplifyhosting": {
-      "service": "amplifyhosting",
-      "type": "cicd",
-      "lastPushTimeStamp": "2021-05-06T12:16:46.420Z"
     }
   }
 }
